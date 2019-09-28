@@ -21,7 +21,7 @@ The dataset is organized in the folloing way::
         ├── predictions
         │ ......................
 
-# Training_Perusat
+# Segmentation_water_bodies_Peru
 Dataset Perusat
 
 
