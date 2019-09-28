@@ -11,7 +11,7 @@ def reverse_transform2(inp):
     std=np.array([0.08853241, 0.07311754, 0.06746538])
     inp = std * inp + mean
     inp = np.clip(inp, 0, 1)*3415  #check value maximun
-    inp = (inp/inp.max()).astype(np.float32)  #*2.5 es ??
+    inp = (inp/inp.max()).astype(np.float32)  
 
     return inp
 

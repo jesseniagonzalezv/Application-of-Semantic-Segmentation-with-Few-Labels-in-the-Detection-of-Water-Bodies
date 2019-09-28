@@ -18,8 +18,7 @@ from models import UNet11
 from dataset import WaterDataset
 from torch.optim import lr_scheduler   ####
 import utilsTrain 
-#import prediction_mask #debjani
-import torch.optim as optim #debjani
+import torch.optim as optim 
 import numpy as np 
 import cv2
 import glob  ###

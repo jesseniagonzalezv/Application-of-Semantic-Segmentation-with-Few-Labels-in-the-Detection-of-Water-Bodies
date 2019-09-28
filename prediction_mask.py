@@ -121,22 +121,3 @@ np.save(str(os.path.join(outfile_path,"inputs_testHR{}.npy".format(int(count))))
 np.save(str(os.path.join(outfile_path,"labels_testHR{}.npy".format(int(count)))), np.array(labels_vec))
 np.save(str(os.path.join(outfile_path,"pred_testHR{}.npy".format(int(count)))), np.array(pred_vec))
 
-#
-#inputs, labels = next(iter(test_loader))
-#inputs = inputs.to(device)
-#labels = labels.to(device)
-#
-#pred = model(inputs)
-#
-#pred = pred.data.cpu().numpy()
-#np.save( str(count) + ".npy" , pred)
-
-#print(inputs.shape)
-#print(pred.shape)
-
-#input_images_rgb = [reverse_transform2(x) for x in inputs[:,:3,:,:].cpu()]
-## Map each channel (i.e. class) to each color
-#target_masks_rgb = [helper.masks_to_colorimg(x) for x in labels.cpu().numpy()]
-#pred_rgb = [helper.masks_to_colorimg(x) for x in pred]
-#print(np.shape(input_images_rgb))
-##helper.plot_side_by_side([input_images_rgb, target_masks_rgb, pred_rgb])
