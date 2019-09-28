@@ -1,19 +1,25 @@
+
+
+How to run
+----------
 The dataset is organized in the folloing way::
-├── data_HR
-│   ├── test
-│           ├── images
-│           └── masks
-│   └── val
-│           ├── images
-│           └── masks
-│   └── train
-│           ├── images
-│           └── masks
-├── logs
-│   ├── mapping
-│           ├── final_layer
-├── predictions
-│ ......................
+::
+
+        ├── data_HR
+        │   ├── test
+        │           ├── images
+        │           └── masks
+        │   └── val
+        │           ├── images
+        │           └── masks
+        │   └── train
+        │           ├── images
+        │           └── masks
+        ├── logs
+        │   ├── mapping
+        │           ├── final_layer
+        ├── predictions
+        │ ......................
 
 # Training_Perusat
 Dataset Perusat
