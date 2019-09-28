@@ -1,0 +1,261 @@
+Epoch 0/39
+----------
+LR0.001
+dataloader:733
+train: bce: 0.239148, dice: 0.330547, loss: 0.284847, jaccard: 0.597021dataloader:183
+val: bce: 0.079101, dice: 0.366102, loss: 0.222602, jaccard: 0.621367saving best model
+1m 39s
+Epoch 1/39
+----------
+LR0.001
+dataloader:733
+train: bce: 0.064404, dice: 0.205721, loss: 0.135063, jaccard: 0.593061dataloader:183
+val: bce: 0.064050, dice: 0.173072, loss: 0.118561, jaccard: 0.613263saving best model
+1m 35s
+Epoch 2/39
+----------
+LR0.001
+dataloader:733
+train: bce: 0.058364, dice: 0.193021, loss: 0.125693, jaccard: 0.586710dataloader:183
+val: bce: 0.068094, dice: 0.181214, loss: 0.124654, jaccard: 0.5889001m 35s
+Epoch 3/39
+----------
+LR0.001
+dataloader:733
+train: bce: 0.058869, dice: 0.191384, loss: 0.125126, jaccard: 0.591600dataloader:183
+val: bce: 0.110345, dice: 0.176587, loss: 0.143466, jaccard: 0.5652631m 35s
+Epoch 4/39
+----------
+LR0.001
+dataloader:733
+train: bce: 0.061799, dice: 0.182144, loss: 0.121972, jaccard: 0.586344dataloader:183
+val: bce: 0.059541, dice: 0.150929, loss: 0.105235, jaccard: 0.616108saving best model
+1m 35s
+Epoch 5/39
+----------
+LR0.001
+dataloader:733
+train: bce: 0.048562, dice: 0.148837, loss: 0.098699, jaccard: 0.591229dataloader:183
+val: bce: 0.087235, dice: 0.142935, loss: 0.115085, jaccard: 0.6188211m 35s
+Epoch 6/39
+----------
+LR0.001
+dataloader:733
+train: bce: 0.043043, dice: 0.141177, loss: 0.092110, jaccard: 0.595464dataloader:183
+val: bce: 0.040283, dice: 0.137461, loss: 0.088872, jaccard: 0.619606saving best model
+1m 35s
+Epoch 7/39
+----------
+LR0.001
+dataloader:733
+train: bce: 0.042482, dice: 0.136967, loss: 0.089725, jaccard: 0.594770dataloader:183
+val: bce: 0.056960, dice: 0.125188, loss: 0.091074, jaccard: 0.6012631m 35s
+Epoch 8/39
+----------
+LR0.001
+dataloader:733
+train: bce: 0.031621, dice: 0.127729, loss: 0.079675, jaccard: 0.598003dataloader:183
+val: bce: 0.025729, dice: 0.116598, loss: 0.071164, jaccard: 0.620964saving best model
+1m 35s
+Epoch 9/39
+----------
+LR0.001
+dataloader:733
+train: bce: 0.038472, dice: 0.128915, loss: 0.083693, jaccard: 0.595010dataloader:183
+val: bce: 0.064816, dice: 0.168914, loss: 0.116865, jaccard: 0.6208111m 35s
+Epoch 10/39
+----------
+LR0.001
+dataloader:733
+train: bce: 0.042168, dice: 0.132886, loss: 0.087527, jaccard: 0.595610dataloader:183
+val: bce: 0.037367, dice: 0.117682, loss: 0.077525, jaccard: 0.6205361m 35s
+Epoch 11/39
+----------
+LR0.001
+dataloader:733
+train: bce: 0.034069, dice: 0.117905, loss: 0.075987, jaccard: 0.598498dataloader:183
+val: bce: 0.041247, dice: 0.116545, loss: 0.078896, jaccard: 0.6182061m 35s
+Epoch 12/39
+----------
+LR0.001
+dataloader:733
+train: bce: 0.033439, dice: 0.126160, loss: 0.079800, jaccard: 0.594956dataloader:183
+val: bce: 0.021106, dice: 0.103847, loss: 0.062477, jaccard: 0.619807saving best model
+1m 35s
+Epoch 13/39
+----------
+LR0.001
+dataloader:733
+train: bce: 0.030540, dice: 0.119669, loss: 0.075104, jaccard: 0.592451dataloader:183
+val: bce: 0.031741, dice: 0.105608, loss: 0.068675, jaccard: 0.6180361m 35s
+Epoch 14/39
+----------
+LR0.001
+dataloader:733
+train: bce: 0.029471, dice: 0.119265, loss: 0.074368, jaccard: 0.597898dataloader:183
+val: bce: 0.023485, dice: 0.104981, loss: 0.064233, jaccard: 0.6208171m 35s
+Epoch 15/39
+----------
+LR0.001
+dataloader:733
+train: bce: 0.035115, dice: 0.123511, loss: 0.079313, jaccard: 0.596582dataloader:183
+val: bce: 0.030103, dice: 0.107342, loss: 0.068723, jaccard: 0.6157051m 35s
+Epoch 16/39
+----------
+LR0.001
+dataloader:733
+train: bce: 0.026834, dice: 0.114800, loss: 0.070817, jaccard: 0.598159dataloader:183
+val: bce: 0.034708, dice: 0.101699, loss: 0.068204, jaccard: 0.6150791m 35s
+Epoch 17/39
+----------
+LR0.001
+dataloader:733
+train: bce: 0.024320, dice: 0.111173, loss: 0.067746, jaccard: 0.597271dataloader:183
+val: bce: 0.018206, dice: 0.109477, loss: 0.063842, jaccard: 0.6194531m 35s
+Epoch 18/39
+----------
+LR0.001
+dataloader:733
+train: bce: 0.033273, dice: 0.128046, loss: 0.080660, jaccard: 0.595884dataloader:183
+val: bce: 0.037615, dice: 0.102723, loss: 0.070169, jaccard: 0.6175721m 35s
+Epoch 19/39
+----------
+LR0.0001
+dataloader:733
+train: bce: 0.022812, dice: 0.108892, loss: 0.065852, jaccard: 0.598109dataloader:183
+val: bce: 0.024209, dice: 0.106144, loss: 0.065176, jaccard: 0.6195131m 35s
+Epoch 20/39
+----------
+LR0.0001
+dataloader:733
+train: bce: 0.021200, dice: 0.106530, loss: 0.063865, jaccard: 0.598086dataloader:183
+val: bce: 0.022573, dice: 0.099056, loss: 0.060815, jaccard: 0.619267saving best model
+1m 35s
+Epoch 21/39
+----------
+LR0.0001
+dataloader:733
+train: bce: 0.018835, dice: 0.108646, loss: 0.063740, jaccard: 0.598735dataloader:183
+val: bce: 0.020358, dice: 0.099326, loss: 0.059842, jaccard: 0.619627saving best model
+1m 35s
+Epoch 22/39
+----------
+LR0.0001
+dataloader:733
+train: bce: 0.018226, dice: 0.106509, loss: 0.062367, jaccard: 0.598698dataloader:183
+val: bce: 0.020726, dice: 0.100163, loss: 0.060445, jaccard: 0.6195091m 35s
+Epoch 23/39
+----------
+LR0.0001
+dataloader:733
+train: bce: 0.018056, dice: 0.105696, loss: 0.061876, jaccard: 0.598593dataloader:183
+val: bce: 0.019461, dice: 0.099906, loss: 0.059684, jaccard: 0.619714saving best model
+1m 35s
+Epoch 24/39
+----------
+LR0.0001
+dataloader:733
+train: bce: 0.016902, dice: 0.102914, loss: 0.059908, jaccard: 0.598805dataloader:183
+val: bce: 0.018967, dice: 0.094268, loss: 0.056618, jaccard: 0.619504saving best model
+1m 35s
+Epoch 25/39
+----------
+LR0.0001
+dataloader:733
+train: bce: 0.017116, dice: 0.103173, loss: 0.060144, jaccard: 0.598657dataloader:183
+val: bce: 0.019702, dice: 0.091759, loss: 0.055731, jaccard: 0.619617saving best model
+1m 35s
+Epoch 26/39
+----------
+LR0.0001
+dataloader:733
+train: bce: 0.017757, dice: 0.103169, loss: 0.060463, jaccard: 0.599341dataloader:183
+val: bce: 0.019794, dice: 0.093385, loss: 0.056590, jaccard: 0.6197971m 35s
+Epoch 27/39
+----------
+LR0.0001
+dataloader:733
+train: bce: 0.017143, dice: 0.102129, loss: 0.059636, jaccard: 0.598898dataloader:183
+val: bce: 0.017760, dice: 0.088963, loss: 0.053362, jaccard: 0.619658saving best model
+1m 35s
+Epoch 28/39
+----------
+LR0.0001
+dataloader:733
+train: bce: 0.017209, dice: 0.100134, loss: 0.058671, jaccard: 0.598211dataloader:183
+val: bce: 0.018095, dice: 0.087905, loss: 0.053000, jaccard: 0.619180saving best model
+1m 35s
+Epoch 29/39
+----------
+LR0.0001
+dataloader:733
+train: bce: 0.017501, dice: 0.099389, loss: 0.058445, jaccard: 0.598817dataloader:183
+val: bce: 0.017442, dice: 0.091177, loss: 0.054309, jaccard: 0.6196641m 35s
+Epoch 30/39
+----------
+LR0.0001
+dataloader:733
+train: bce: 0.015713, dice: 0.100292, loss: 0.058003, jaccard: 0.598579dataloader:183
+val: bce: 0.016038, dice: 0.088245, loss: 0.052142, jaccard: 0.619196saving best model
+1m 35s
+Epoch 31/39
+----------
+LR0.0001
+dataloader:733
+train: bce: 0.016303, dice: 0.101539, loss: 0.058921, jaccard: 0.598099dataloader:183
+val: bce: 0.017580, dice: 0.086610, loss: 0.052095, jaccard: 0.619198saving best model
+1m 35s
+Epoch 32/39
+----------
+LR0.0001
+dataloader:733
+train: bce: 0.015990, dice: 0.096077, loss: 0.056033, jaccard: 0.598162dataloader:183
+val: bce: 0.015768, dice: 0.086453, loss: 0.051110, jaccard: 0.619617saving best model
+1m 35s
+Epoch 33/39
+----------
+LR0.0001
+dataloader:733
+train: bce: 0.015419, dice: 0.097997, loss: 0.056708, jaccard: 0.598749dataloader:183
+val: bce: 0.016009, dice: 0.086057, loss: 0.051033, jaccard: 0.619587saving best model
+1m 35s
+Epoch 34/39
+----------
+LR0.0001
+dataloader:733
+train: bce: 0.015615, dice: 0.098512, loss: 0.057064, jaccard: 0.598895dataloader:183
+val: bce: 0.016575, dice: 0.085084, loss: 0.050830, jaccard: 0.619586saving best model
+1m 35s
+Epoch 35/39
+----------
+LR0.0001
+dataloader:733
+train: bce: 0.015553, dice: 0.098463, loss: 0.057008, jaccard: 0.598483dataloader:183
+val: bce: 0.015607, dice: 0.087989, loss: 0.051798, jaccard: 0.6192321m 35s
+Epoch 36/39
+----------
+LR0.0001
+dataloader:733
+train: bce: 0.015296, dice: 0.097609, loss: 0.056452, jaccard: 0.598112dataloader:183
+val: bce: 0.016278, dice: 0.086201, loss: 0.051240, jaccard: 0.6196131m 35s
+Epoch 37/39
+----------
+LR0.0001
+dataloader:733
+train: bce: 0.016743, dice: 0.098286, loss: 0.057514, jaccard: 0.598311dataloader:183
+val: bce: 0.018126, dice: 0.092469, loss: 0.055297, jaccard: 0.6190381m 35s
+Epoch 38/39
+----------
+LR0.0001
+dataloader:733
+train: bce: 0.015715, dice: 0.098029, loss: 0.056872, jaccard: 0.595059dataloader:183
+val: bce: 0.016495, dice: 0.084904, loss: 0.050699, jaccard: 0.618111saving best model
+1m 35s
+Epoch 39/39
+----------
+LR1e-05
+dataloader:733
+train: bce: 0.014468, dice: 0.097778, loss: 0.056123, jaccard: 0.594939dataloader:183
+val: bce: 0.016046, dice: 0.083059, loss: 0.049553, jaccard: 0.618381saving best model
+1m 35s
+Best val loss: 0.049553
