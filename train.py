@@ -74,7 +74,7 @@ def main():
         return DataLoader(
             dataset=WaterDataset(file_names, transform=transform,mode=mode, limit=limit),
             shuffle=shuffle,            
-            batch_size=batch_size #args.batch_size,
+            batch_size=batch_size, #args.batch_size,
             pin_memory=torch.cuda.is_available() #### in process arguments
         )
 
