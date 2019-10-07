@@ -38,7 +38,7 @@ def main():
     arg = parser.add_argument
     arg('--device-ids', type=str, default='0', help='For example 0,1 to run on two GPUs')
     arg('--root', default='runs/debug', help='checkpoint root')
-    arg('--batch-size', type=int, default=1)
+    arg('--batch-size', type=int, default=4)
     arg('--limit', type=int, default=100, help='number of images in epoch')
     arg('--n-epochs', type=int, default=100)
     arg('--lr', type=float, default=0.001)
@@ -74,7 +74,7 @@ def main():
         return DataLoader(
             dataset=WaterDataset(file_names, transform=transform,mode=mode, limit=limit),
             shuffle=shuffle,            
-            batch_size=args.batch_size,
+            batch_size=batch_size #args.batch_size,
             pin_memory=torch.cuda.is_available() #### in process arguments
         )
 
@@ -127,7 +127,7 @@ def main():
     exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=20, gamma=0.1) 
     
     
-    utilsTrain.train_model( #debjani
+    utilsTrain.train_model( 
         model,
         optimizer_ft,
         exp_lr_scheduler,
