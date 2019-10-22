@@ -33,12 +33,14 @@ def maxvalue(root):
     
 in_path = Path('imagenes')
 
-input_filename0  = 'imagen0/IMG_PER1_20170422154946_ORT_MS_003749.TIF'
+input_filename0  = 'imagen0/IMG_PER1_20170422154946_ORT_MS_003749.TIF' #ok
 input_filename1  = 'imagen1/IMG_PER1_20170422154946_ORT_MS_003131.TIF'
 input_filename2  = 'imagen2/IMG_PER1_20170422154946_ORT_MS_002513.TIF'
 input_filename3  = 'imagen3/IMG_PER1_20190703144250_ORT_MS_000672.TIF'
 input_filename4  = 'imagen4/IMG_PER1_20190703144250_ORT_MS_001290.TIF'
 input_filename5 = 'imagen5/IMG_PER1_20190703144250_ORT_MS_002526.TIF'
+input_filename6 = 'imagen6_conida/IMG_PER1_20170410154322_ORT_MS_000659.TIF'
+
 array_max=[]
 
 root0=str(os.path.join(in_path, input_filename0))
@@ -64,5 +66,10 @@ array_max.append(max4)
 root5=str(os.path.join(in_path, input_filename5))
 max5= maxvalue(root5)
 array_max.append(max5)
+
+
+root6=str(os.path.join(in_path, input_filename6))
+max6= maxvalue(root6)
+array_max.append(max6)
 
 print('array', array_max, 'max', np.max(array_max))
