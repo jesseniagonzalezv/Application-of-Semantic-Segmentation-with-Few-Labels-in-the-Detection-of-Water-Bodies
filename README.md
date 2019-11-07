@@ -33,7 +33,9 @@ The dataset is organized in the folloing way::
         │ ......................
 
 # Segmentation_water_bodies_Peru
-Dataset Perusat
+Dataset Perusat--- HR
+Dataset Sentienl--- LR
+
 
 
 Run_HR: 
