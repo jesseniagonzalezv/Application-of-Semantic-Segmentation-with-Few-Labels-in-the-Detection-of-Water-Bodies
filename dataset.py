@@ -4,9 +4,7 @@
 ####################
 import torch
 import numpy as np
-import cv2
 from torch.utils.data import Dataset
-from pathlib import Path
 
 
 
@@ -31,6 +29,7 @@ class WaterDataset(Dataset):
             
 
         img = load_image(img_file_name)
+        #print(self.mode)
 
         if self.mode == 'train':
             mask = load_mask(img_file_name)
@@ -42,7 +41,7 @@ class WaterDataset(Dataset):
             mask = np.zeros(img.shape[:2])
             img, mask = self.transform(img, mask)
 
-            return to_float_tensor(img), str(img_file_name) #mask
+            return to_float_tensor(img), str(img_file_name) 
 
 
 def to_float_tensor(img):
@@ -56,8 +55,8 @@ def load_image(path):
     return  img 
 
 def load_mask(path):   
-    mask= np.zeros((512, 512))
+
     mask = np.load(str(path).replace('images', 'masks').replace(r'.npy', r'_a.npy'), 0)
-    mask=mask.transpose(1, 2, 0).reshape(512,-1)
+    mask=mask.transpose(1, 2, 0).reshape(mask.shape[1],-1)
     mask=(mask > 0).astype(np.uint8)
     return mask

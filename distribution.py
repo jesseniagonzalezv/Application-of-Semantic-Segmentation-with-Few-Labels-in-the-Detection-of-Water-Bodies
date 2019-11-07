@@ -21,7 +21,7 @@ from transformsdata import (DualCompose,
                         VerticalFlip)
 
 
-PATH = 'logs/mapping/HR_model_temp2.pth'
+PATH = 'logs/mapping/modelHR_40epoch.pth'
 
 #Initialise the model
 num_classes = 1 
@@ -33,9 +33,7 @@ model.eval()   # Set model to evaluate mode
 ######################### setting all data paths#######
 outfile_path = 'predictions/unlabel_test/'
 data_path = 'data_HR'
-#test_path= "data_HR/unlabel/images_jungle"  #crear otro test
-test_path= "data_HR/unlabel/images"  #crear otro test
-
+test_path= "data_HR/unlabel/images_jungle"  #crear otro test
 get_files_path = test_path + "/*.npy"
 test_file_names = np.array(sorted(glob.glob(get_files_path)))
 ###################################
@@ -46,14 +44,14 @@ test_transform = DualCompose([
         ImageOnly(Normalize())
     ])
 
-def make_loader(file_names, shuffle=False, transform=None, limit=None):
+def make_loader(file_names, shuffle=False, transform=None,mode='train',batch_size=1, limit=None):
     return DataLoader(
-        dataset=WaterDataset(file_names, transform=transform, limit=limit, mode='test'),
+        dataset=WaterDataset(file_names, transform=transform, limit=limit),
         shuffle=shuffle,            
-        batch_size=1,
+        batch_size=batch_size,
         pin_memory=torch.cuda.is_available() #### in process arguments
     )
-test_loader = make_loader(test_file_names, shuffle=False, transform=test_transform)
+test_loader = make_loader(test_file_names, shuffle=False, transform=test_transform, mode='test', batch_size = 1)
 metrics = defaultdict(float)
 
 count=0
@@ -69,5 +67,5 @@ for inputs , name in test_loader:
         pred_vec.append(pred.data.cpu().numpy())
         count += 1
         print(count)
-np.save(outfile_path + "inputs_unlab_dist" + str(count) + ".npy" , np.array(input_vec))
-np.save(outfile_path + "pred_unlab_dist" +  str(count) + ".npy" , np.array(pred_vec))
+np.save(outfile_path + "inputs_unlab_" + str(count) + ".npy" , np.array(input_vec))
+np.save(outfile_path + "pred_unlab_" +  str(count) + ".npy" , np.array(pred_vec))

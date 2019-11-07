@@ -15,8 +15,6 @@ class DualCompose:
     def __call__(self, x, mask=None):
         for t in self.transforms:
             x, mask = t(x, mask)
-            #print('en DC')
-
         return x, mask
 
 class CenterCrop:
@@ -40,7 +38,6 @@ class CenterCrop:
 
         if mask is not None:
             mask = mask[y1:y2, x1:x2]
-        #print('en CC')
 
         return img, mask
 
@@ -54,8 +51,6 @@ class HorizontalFlip:
             img = cv2.flip(img, 1)
             if mask is not None:
                 mask = cv2.flip(mask, 1)
-            #print('en HC')
-
         return img, mask
     
     
@@ -68,8 +63,6 @@ class VerticalFlip:
             img = cv2.flip(img, 0)
             if mask is not None:
                 mask = cv2.flip(mask, 0)
-            #print('en VF')
-
         return img, mask
     
     
@@ -91,7 +84,6 @@ class Rotate:
                 mask = cv2.warpAffine(mask, mat, (height, width),
                                       flags=cv2.INTER_NEAREST,
                                       borderMode=cv2.BORDER_REFLECT_101)
-        #print('en Rot')
 
         return img, mask
 
@@ -100,45 +92,39 @@ class ImageOnly:
         self.trans = trans
 
     def __call__(self, x, mask=None):
-        #print('en IO')
-
         return self.trans(x), mask
     
+
     
-class Normalize:
-    def __init__(self, mean=(0.11239524, 0.101936, 0.11311523, 0.13813571), std=(0.08964322, 0.06702993, 0.05725554, 0.11082901)):
-#    def __init__(self, mean=(0.12121853, 0.10802471, 0.11964872, 0.137894), std=(0.09692554, 0.07299206, 0.06229836, 0.11779822)): db
-        
-        
+class Normalize:  #HR PeruSat
+    def __init__(self, mean=(0.11383374, 0.10310764, 0.11405758, 0.13963067), std=(0.08972336, 0.06713878, 0.05742005, 0.11076992)):
+        #mean=(0.11239524, 0.101936, 0.11311523, 0.13813571), std=(0.08964322, 0.06702993, 0.05725554, 0.11082901)
         self.mean = mean
         self.std = std
 
     def __call__(self, img):
         img= img.astype(np.float32)
-        max_pixel_value=3413
+        max_pixel_value=3521 #3413
         img = img/max_pixel_value 
         img -= np.ones(img.shape) * self.mean
         img /= np.ones(img.shape) * self.std
-        #print('en Nor')
-
         return img
 
 
-class Normalize2:
+class Normalize2:  #LR Sentinel
     def __init__(self, mean=(0.11946253, 0.12642327, 0.13482856, 0.15008255), std=(0.08853241, 0.07311754, 0.06746538, 0.10958234)):
         self.mean = mean
         self.std = std
 
     def __call__(self, img):
         img= img.astype(np.float32)
-        max_pixel_value=1.0176
+        max_pixel_value=1 #.0176
         img = img/max_pixel_value 
         img -= np.ones(img.shape) * self.mean
         img /= np.ones(img.shape) * self.std
-        #print('en Nor2')
-
         return img
-
+    
+    
 class RandomRotate90:
     def __init__(self, prob=0.5):
         self.prob = prob
@@ -149,8 +135,6 @@ class RandomRotate90:
             img = np.rot90(img, factor)
             if mask is not None:
                 mask = np.rot90(mask, factor)
-            #print('en Random')
-
         return img.copy(), mask.copy()
 
 
