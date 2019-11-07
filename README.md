@@ -15,19 +15,39 @@ The dataset is organized in the folloing way::
         │   └── train
         │           ├── images
         │           └── masks
-        ├── logs
+        ├── data_LR
+        │   ├── test
+        │           ├── images
+        │           └── masks
+        │   └── val
+        │           ├── images
+        │           └── masks
+        │   └── train
+        │           ├── images
+        │           └── masks
+        ├── logs_LR
         │   ├── mapping
-        │           ├── final_layer
+        │           ├── 
         ├── predictions
+        ├── history
         │ ......................
 
 # Segmentation_water_bodies_Peru
 Dataset Perusat
 
 
-Run: 
-1. python train.py
-2. python prediction_mask.py
+Run_HR: 
+1. python train_HR.py
+2. python plotting.py  (need path roots)
 
-Test the model with the test_dataset:
-        testing_model.ipynb
+Run_LR: 
+1. python train_LR.py
+2. python plotting.py  (need path roots)
+
+Model Combined Parallel: 
+1. python train_paral.py
+2. python plotting.py  (need path roots)
+
+Model Combined Sequential: 
+1. python train_seq.py
+2. python plotting.py  (need path roots)
