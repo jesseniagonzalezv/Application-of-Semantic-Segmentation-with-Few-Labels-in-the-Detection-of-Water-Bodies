@@ -23,9 +23,11 @@ import numpy as np
 import glob  ###
 import os
 
+from get_train_test_kfold import get_split_out, percent_split, get_split_in
+
 from split_train_val import get_files_names
 from scalarmeanstd import meanstd
-from metrics_prediction import find_metrics
+from metrics_prediction_2 import find_metrics
 
 from transformsdata import (DualCompose,
                         ImageOnly,
@@ -41,6 +43,9 @@ def main():
     parser = argparse.ArgumentParser()
     arg = parser.add_argument
     arg('--device-ids', type=str, default='0', help='For example 0,1 to run on two GPUs')
+    arg('--fold-out', type=int, help='fold train test', default=0)
+    arg('--fold-in', type=int, help='fold train val', default=0)
+    arg('--percent', type=float, help='percent of data', default=1)
     arg('--root', default='runs/debug', help='checkpoint root')
     arg('--batch-size', type=int, default=4)
     arg('--limit', type=int, default=10000, help='number of images in epoch')
@@ -79,17 +84,18 @@ def main():
 
     out_path = Path('logs_HR/mapping/')
 
-    
+
     ####################Change the files_names ######################################
     data_path = Path('data_HR') # change the data path here 
     
+    name_file = '_'+ str(int(args.percent*100))+'_percent'
+    data_all='data'
     #name_file='_HR_100'
     #name_file='_HR_400'
     #name_file='_HR_916' 
     #name_file='_HR_dist'
-    name_file='_dist_60'
+    #name_file='_dist_60'
     #name_file='_dist_60_2'
-
     #name_file='_HR_60_fake'
     #name_file='_HR_116_fake'
 
@@ -99,11 +105,21 @@ def main():
     #val_path= str(data_path/'val{}'/'images').format(name_file)+ "/*.npy" 
     #train_file_names = np.array(sorted(glob.glob(train_path)))
     #val_file_names = np.array(sorted(glob.glob(val_path)))
-    #################################################################################    
-    train_file_names, val_file_names = get_files_names(data_path,name_file)
+    #################################################################################  
+    # cross validation K-fold train test
+    train_val_file_names, test_file_names = get_split_out(data_path,data_all,args.fold_out)
+    
+    if args.percent !=1:
+        train_val_file_names= percent_split(train_val_file_names, args.percent) 
 
-    np.save(str(os.path.join(out_path,"train_files{}_{}.npy".format(name_file,args.model))), train_file_names)
-    np.save(str(os.path.join(out_path,"val_files{}_{}.npy".format(name_file,args.model))), val_file_names)
+    #################################################################################  
+
+    
+    train_file_names,val_file_names = get_split_in(train_val_file_names,args.fold_in)    #train_file_names, val_file_names = get_files_names(data_path,name_file)
+
+
+    np.save(str(os.path.join(out_path,"train_files{}_{}_fold{}.npy".format(name_file,args.model,args.fold_out))), train_file_names)
+    np.save(str(os.path.join(out_path,"val_files{}_{}_fold{}.npy".format(name_file,args.model,args.fold_out))), val_file_names)
     
     ######## 733
     #train_path= data_path/'train'/'images'
@@ -133,7 +149,7 @@ def main():
             pin_memory=torch.cuda.is_available() #### in process arguments
         )
     ########return value of mean_std_train
-    max_values, mean_values, std_values=meanstd(train_file_names, val_file_names,name_file,str(data_path)) #_60 --data_HR, data_LR
+    max_values, mean_values, std_values=meanstd(train_file_names, val_file_names,test_file_names,name_file,str(data_path)) #_60 --data_HR, data_LR
 
     train_transform = DualCompose([
         CenterCrop(512),
@@ -171,23 +187,27 @@ def main():
     
     utilsTrain_HR.train_model(
    
-        name_file,
-        model,
-        optimizer_ft,
-        exp_lr_scheduler,
-        dataloaders,
-        args.model,
-        args.n_epochs 
+        name_file=name_file,
+        model=model,
+        optimizer=optimizer_ft,
+        scheduler=exp_lr_scheduler,
+        dataloaders=dataloaders,
+        fold_out=args.fold_out,
+        name_model=args.model,
+        num_epochs=args.n_epochs 
         )
 
   #  torch.save(model.module.state_dict(), out_path/'modelHR_40epoch.pth')
     #torch.save(model.module.state_dict(), out_path/'modelHR_40epoch_100.pth')
     #torch.save(model.module.state_dict(), out_path/'modelHR_40epoch_400.pth')
     #torch.save(model.module.state_dict(), out_path/'modelHR_40epoch_fake.pth')
-    torch.save(model.module.state_dict(),(str(out_path)+'/model_40epoch{}_{}.pth').format(name_file,args.model))
+    torch.save(model.module.state_dict(),(str(out_path)+'/model_40epoch{}_{}_fold{}.pth').format(name_file,args.model,args.fold_out)) #I am saving the last model of k_fold
     
     print(args.model)
-    find_metrics(train_file_names, val_file_names, max_values=3521, mean_values, std_values,args.model, out_file='HR', dataset_file='HR',name_file=name_file)   
+    max_values_all_data=3521
+    
+
+    find_metrics(train_file_names, val_file_names, test_file_names, max_values_all_data, mean_values, std_values, args.fold_out, args.fold_in,model, args.model, out_file='HR', dataset_file='HR',name_file=name_file)   
     #out_file=the file of the outputs: HR, LR, distil, dataset_file=ubication of the data:HR, LR, name_files: HR_916,HR_100, HR_60_fake
         
 if __name__ == '__main__':

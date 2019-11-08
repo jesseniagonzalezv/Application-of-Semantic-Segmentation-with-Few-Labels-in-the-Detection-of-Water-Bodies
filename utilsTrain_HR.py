@@ -51,10 +51,10 @@ def print_metrics(metrics, epoch_samples, phase, f):
     print("{}: {}".format(phase, ", ".join(outputs)))
     f.write("{}: {}".format(phase, ", ".join(outputs)))    ### f
 
-def train_model(name_file, model, optimizer, scheduler,dataloaders,name_model='UNet11',num_epochs=25):
+def train_model(name_file, model, optimizer, scheduler,dataloaders,fold_out, name_model='UNet11',num_epochs=25):
 
     ##name depend
-    #name_save='_400'
+    #name_save='_400' 
     #finally_path = Path('logs_HR')
 
     #final_layer = finally_path/'mapping'/'final_layer'
@@ -68,7 +68,7 @@ def train_model(name_file, model, optimizer, scheduler,dataloaders,name_model='U
     #f = open("history_model1_100.txt", "w+")
     #f = open("history_model1_400.txt", "w+")
    # f = open("history_modelHR_fake.txt", "w+")
-    f = open("history_HR/history_model{}_{}.txt".format(name_file,name_model), "w+")
+    f = open("history_HR/history_model{}_{}_fold{}.txt".format(name_file,name_model,fold_out), "w+")
 
    
     for epoch in range(num_epochs):

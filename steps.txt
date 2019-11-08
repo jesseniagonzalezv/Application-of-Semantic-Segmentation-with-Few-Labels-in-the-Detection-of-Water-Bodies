@@ -1,0 +1,18 @@
+Select:
+     train
+     utilsTrain
+     
+change only data_path and name_file tendra train_val{_HR_916}
+    data_path = Path('data_HR') # change the data path here 
+    name_file='_HR_916'
+
+Run the train
+    python train_HR.py
+
+
+Run the plotting
+    python plotting.py
+    #plot_prediction(stage='test',name_file=name_file,out_file=out_file,count=29) # #LR •dist
+
+
+
