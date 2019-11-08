@@ -70,16 +70,16 @@ def cal_dir_stat(im_pths, maximunValue): ##give the names
     return rgb_mean, rgb_std
 
 
-def meanstd(train_root,val_root, name_file,rootdata='data_HR'):
+def meanstd(train_root,val_root, test_root,name_file,rootdata='data_HR'):
     data_path = Path(rootdata)
     #train_root= str(data_path/'train{}'/'images').format(name_file)
     #val_root= str(data_path/'val{}'/'images').format(name_file)
  #************************************************************ 
-    test_raiz= str(data_path/'test{}'/'images').format(name_file)
+    #test_raiz= str(data_path/'test{}'/'images').format(name_file)
     #test_raiz= str(data_path/'test_HR_916'/'images')
 
-    get_files_path = str(test_raiz) + "/*.npy"
-    test_root = np.array(sorted(glob.glob(get_files_path)))
+    #get_files_path = str(test_raiz) + "/*.npy"
+    #test_root = np.array(sorted(glob.glob(get_files_path)))
  #************************************************************ 
     
     data_all_raiz=str(data_path/'data'/'images')  #'/home/jgonzalez/Test_2019/Test_PreProcessing/data' #all the dataset

@@ -100,13 +100,11 @@ def print_metrics(metrics, epoch_samples, file):
     file.write("{}".format(",".join(outputs)))
 
     
-def find_metrics(train_file_names,val_file_names,max_values, mean_values, std_values, name_model='UNet11', out_file='HR',dataset_file='HR' ,name_file='_HR_60_fake' ):
+def find_metrics(train_file_names,val_file_names,max_values, mean_values, std_values,  name_model='UNet11', out_file='HR',dataset_file='HR' ,name_file='_HR_60_fake' ):
                             #LR , dist_paral, dist_sec   #LR
         
     #max_values, mean_values, std_values=meanstd(name_file,("data_{}").format(dataset_file)) #_60, data_HR/LR 
 
-    PATH = ('logs_{}/mapping/model_40epoch{}_{}.pth').format(out_file,name_file,name_model) 
-    #PATH = ('logs_{}/mapping/model_40epoch{}_UNet.pth').format(out_file,name_file)
 
     outfile_path = ('predictions_{}').format(out_file)
         
@@ -130,6 +128,8 @@ def find_metrics(train_file_names,val_file_names,max_values, mean_values, std_va
         
 ###########################MAKE CODE MODELSSSS
 
+    PATH = ('logs_{}/mapping/model_40epoch{}_{}.pth').format(out_file,name_file,name_model) 
+    #PATH = ('logs_{}/mapping/model_40epoch{}_UNet.pth').format(out_file,name_file)
         
     model.cuda()
     model.load_state_dict(torch.load(PATH))

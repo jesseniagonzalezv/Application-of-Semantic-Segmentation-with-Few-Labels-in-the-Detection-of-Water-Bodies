@@ -88,10 +88,10 @@ def plot_prediction(stage='test',name_file='_HR_60_fake',out_file='HR',name_mode
     val_label = np.load(label_file)
     pred_images[0,0,:,:,:].shape
     print(val_images.shape)
-    input_images_rgb = [helper.reverse_transform(x) for x in val_images[:,0,:3,:,:]]   #new metrics
+    input_images_rgb = [helper.reverse_transform(x) for x in val_images[:94,0,:3,:,:]]   #new metrics
     # Map each channel (i.e. class) to each color
-    target_masks_rgb = [helper.masks_to_colorimg(x) for x in val_label[:,0,:3,:,:]]
-    pred_rgb = [helper.masks_to_colorimg(x) for x in pred_images[:,0,:,:,:]]
+    target_masks_rgb = [helper.masks_to_colorimg(x) for x in val_label[:94,0,:3,:,:]]
+    pred_rgb = [helper.masks_to_colorimg(x) for x in pred_images[:94,0,:,:,:]]
     #print(np.shape(input_images_rgb))
     #print(len([input_images_rgb, target_masks_rgb, pred_rgb]))
     name_output=stage + name_file
@@ -100,14 +100,14 @@ def plot_prediction(stage='test',name_file='_HR_60_fake',out_file='HR',name_mode
     
 ###############################call the functions
 
-#plot_history_train(out_file='LR', name_file='_LR',name_model='UNet')   
+plot_history_train(out_file='LR', name_file='_LR',name_model='UNet11')   
 
 def plotting_figures(stage,name_file,out_file,name_model='UNet11',count=29):
     #stage='test',name_file='_HR_60_fake',out_file='HR',count=29) # #LR •dist
 
     plot_history_train(out_file, name_file,name_model)   
     plot_prediction(stage, name_file, out_file, name_model,count) # #LR •dist
-    plot_prediction(stage='val',name_file='_dist_60',out_file='HR',count=11) # #LR •dist
+    #plot_prediction(stage='val',name_file=,out_file,count=11) # #LR •dist
 
     dice=read_metric(out_file, stage, name_file, name='dice',name_model=name_model)
     jaccard=read_metric(out_file, stage, name_file, name='jaccard',name_model=name_model)
@@ -120,7 +120,7 @@ def plotting_figures(stage,name_file,out_file,name_model='UNet11',count=29):
 #plotting_figures(stage='test',name_file='_dist_60_2',out_file='HR',name_model='UNet11',count=94)
 
 ############################### LR
-#plotting_figures(stage='test',name_file='_LR',out_file='LR',name_model='UNet11', count=613)
+plotting_figures(stage='test',name_file='_LR',out_file='LR',name_model='UNet11', count=613)
 
 ############################### LR plotting history
 #plot_history_train(out_file='LR',name_file='_LR',name_model='UNet11') #change the name output
