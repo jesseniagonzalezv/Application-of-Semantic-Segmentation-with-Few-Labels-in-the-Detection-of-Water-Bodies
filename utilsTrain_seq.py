@@ -45,39 +45,40 @@ def calc_loss(pred_hr_lab, target_hr_lab,
     #loss for full-network
     loss =  (loss_l2 + loss_l3 * weight_loss)
 
-    pred_hr_lab=(pred_hr_lab >0.50).float()  #with 0.55 is a little better
-    pred_hr_lab=(pred_hr_unlab >0.50).float() 
+    #pred_hr_lab=(pred_hr_lab >0.50).float()  #with 0.55 is a little better
+    #pred_hr_lab=(pred_hr_unlab >0.50).float() 
     
-    jaccard_HR_lb = metric_jaccard(pred_hr_lab, target_hr_lab)
-    jaccard_HR_unlab = metric_jaccard(pred_hr_unlab, target_hr_unlab_up )
+    #jaccard_HR_lb = metric_jaccard(pred_hr_lab, target_hr_lab)
+    #jaccard_HR_unlab = metric_jaccard(pred_hr_unlab, target_hr_unlab_up )
 
     metrics['loss_lab'] += loss_l2.data.cpu().numpy() * target_hr_lab.size(0)
     metrics['loss_unlab'] += loss_l3.data.cpu().numpy() * target_hr_unlab_up.size(0)
     metrics['loss'] += loss.data.cpu().numpy()*(target_hr_lab.size(0)+target_hr_unlab_up.size(0))     #check
     
     metrics['loss_dice_lb'] += dice_l2.data.cpu().numpy() * target_hr_lab.size(0)  
-    metrics['jaccard_lb'] += jaccard_HR_lb.data.cpu().numpy() * target_hr_lab.size(0) 
+   # metrics['jaccard_lb'] += jaccard_HR_lb.data.cpu().numpy() * target_hr_lab.size(0) 
     
     metrics['loss_dice_unlab'] += dice_l3.data.cpu().numpy() * target_hr_unlab_up.size(0)      
-    metrics['jaccard_unlab'] += jaccard_HR_unlab.data.cpu().numpy() * target_hr_unlab_up.size(0) 
+   # metrics['jaccard_unlab'] += jaccard_HR_unlab.data.cpu().numpy() * target_hr_unlab_up.size(0) 
    
     return loss
 
 def print_metrics(metrics,  epoch_samples_l2, epoch_samples_l3, epoch_samples_loss, phase, f):    
     outputs = []
     epoch_samples = [epoch_samples_l2, epoch_samples_l3, 
-                     epoch_samples_loss,epoch_samples_l2,epoch_samples_l2, epoch_samples_l3, epoch_samples_l3]
+                     epoch_samples_loss,epoch_samples_l2,#epoch_samples_l2, epoch_samples_l3, 
+epoch_samples_l3]
     
     i = 0
     for k in metrics.keys():       #metricas(frist-mean-input.size)samples
         outputs.append("{}: {:4f}".format(k, metrics[k] / epoch_samples[i]))
         i += 1
     print("{}: {}".format(phase, ", ".join(outputs)))
-    f.write("{}: {}".format(phase, ", ".join(outputs)))
+    f.write("{}: {}".format(phase, ", ".join(outputs))+"\n")
 ##______________________________________________________
 
-def train_model(name_file,model_LR, model_HR, optimizer, scheduler,dataloaders_HR_lab,
-                dataloaders_HR_unlab,name_model_HR='UNet11',n_steps=15,num_epochs=25):
+def train_model(name_file_HR,model_LR, model_HR, optimizer, scheduler,dataloaders_HR_lab,
+                dataloaders_HR_unlab,fold_out,name_model_HR='UNet11',n_steps=15,num_epochs=25):
 
     #finally_path = Path('logs')
     #final_layer = finally_path/'mapping'/'final_layer'
@@ -92,7 +93,7 @@ def train_model(name_file,model_LR, model_HR, optimizer, scheduler,dataloaders_H
 
         #f = open("history_model1.txt", "w+")       #--------------------------------------------------------
     #f = open("history_model1_100.txt", "w+")  
-    f = open("history_seq/history_model{}_{}.txt".format(name_file,name_model), "w+")  
+    f = open("history_seq/history_model{}_{}_fold{}.txt".format(name_file_HR,name_model_HR,fold_out), "w+")  
          #--------------------------------------------------------
     upsample = nn.Upsample(scale_factor= 8, mode='bicubic')
     #------------------------------------------------------------
@@ -113,15 +114,15 @@ def train_model(name_file,model_LR, model_HR, optimizer, scheduler,dataloaders_H
 
                 model_HR.train()  # Set model to training mode
             else:
-                    model_HR.eval()   # Set model to evaluate mode
+                model_HR.eval()   # Set model to evaluate mode
 
             metrics = defaultdict(float)
             epoch_samples_l2 = epoch_samples_l3 = epoch_samples_loss = 0
             
             #itr = 0
-            size_dataloader_HR_unlab=len(dataloaders_HR_unlab[phase])
-            print("dataloader_unlb:",size_dataloader_HR_unlab) 
-            f.write("dataloader_unlb:" + str(size_dataloader_HR_unlab) + "\n")  
+            #size_dataloader_HR_unlab=len(dataloaders_HR_unlab[phase])
+            #print("dataloader_unlb:",size_dataloader_HR_unlab) 
+  #          f.write("dataloader_unlb:" + str(size_dataloader_HR_unlab) + "\n")  
             
             for i in range(n_steps): #input_HR_lab, labels_HR_lab in dataloaders_HR_lab[phase]:
                 input_HR_lab, labels_HR_lab= next(iter ( dataloaders_HR_lab[phase]))           

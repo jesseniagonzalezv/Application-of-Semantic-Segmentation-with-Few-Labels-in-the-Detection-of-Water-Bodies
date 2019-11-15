@@ -106,11 +106,12 @@ def main():
     #train_file_names = np.array(sorted(glob.glob(train_path)))
     #val_file_names = np.array(sorted(glob.glob(val_path)))
     #################################################################################  
-    # cross validation K-fold train test
-    train_val_file_names, test_file_names = get_split_out(data_path,data_all,args.fold_out)
-    
+    # Nested cross validation K-fold train test
+    #train_val_file_names, test_file_names = get_split_out(data_path,data_all,args.fold_out)
+    train_val_file_names=np.array(sorted(glob.glob(str(data_path/'data_915'/'images')+ "/*.npy")))
+    test_file_names =  np.array(sorted(glob.glob(str(data_path/'test_915'/'images') + "/*.npy")))
     if args.percent !=1:
-        train_val_file_names= percent_split(train_val_file_names, args.percent) 
+        extra, train_val_file_names= percent_split(train_val_file_names, args.percent) 
 
     #################################################################################  
 
@@ -149,7 +150,7 @@ def main():
             pin_memory=torch.cuda.is_available() #### in process arguments
         )
     ########return value of mean_std_train
-    max_values, mean_values, std_values=meanstd(train_file_names, val_file_names,test_file_names,name_file,str(data_path)) #_60 --data_HR, data_LR
+    max_values, mean_values, std_values=meanstd(train_file_names, val_file_names,test_file_names,str(data_path)) #_60 --data_HR, data_LR
 
     train_transform = DualCompose([
         CenterCrop(512),

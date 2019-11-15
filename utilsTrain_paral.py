@@ -17,7 +17,7 @@ import torch.nn as nn
 
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-print(device)
+print('device',device)
 if (device=='cpu'):
     print('CUDA is not available.  Training on CPU ...')
 else:
@@ -51,21 +51,21 @@ def calc_loss(pred_lr, target_lr,
     #loss for full-network
     loss =  (loss_l1 + loss_l2 + loss_l3 * weight_loss )
     
-    pred_hr_lab=(pred_hr_lab >0.50).float()  #with 0.55 is a little better
-    pred_hr_lab=(pred_hr_unlab >0.50).float() 
+    #pred_hr_lab=(pred_hr_lab >0.50).float()  #with 0.55 is a little better
+    #pred_hr_unlab=(pred_hr_unlab >0.50).float() 
     
-    jaccard_HR_lb = metric_jaccard(pred_hr_lab, target_hr_lab)
-    jaccard_HR_unlab = metric_jaccard(pred_hr_unlab, target_hr_unlab_up )
+    #jaccard_HR_lb = metric_jaccard(pred_hr_lab, target_hr_lab)
+    #jaccard_HR_unlab = metric_jaccard(pred_hr_unlab, target_hr_unlab_up )
     
     metrics['loss_LR'] += loss_l1.data.cpu().numpy() * target_lr.size(0)
     metrics['loss_HRlab'] += loss_l2.data.cpu().numpy() * target_hr_lab.size(0)
     metrics['loss_HRunlab'] += loss_l3.data.cpu().numpy() * target_hr_unlab_up.size(0)
     metrics['loss'] += loss.data.cpu().numpy() *(target_hr_lab.size(0)+target_hr_unlab_up.size(0))#* target.size(0)
     metrics['loss_dice_lb'] += dice_l2.data.cpu().numpy() * target_hr_lab.size(0)  
-    metrics['jaccard_lb'] += jaccard_HR_lb.data.cpu().numpy() * target_hr_lab.size(0) 
+    #metrics['jaccard_lb'] += jaccard_HR_lb.data.cpu().numpy() * target_hr_lab.size(0) 
     
     metrics['loss_dice_unlab'] += dice_l3.data.cpu().numpy() * target_hr_unlab_up.size(0)  #cambiar por hr_label
-    metrics['jaccard_unlab'] += jaccard_HR_unlab.data.cpu().numpy() * target_hr_unlab_up.size(0) #cambiar por hr_label
+   # metrics['jaccard_unlab'] += jaccard_HR_unlab.data.cpu().numpy() * target_hr_unlab_up.size(0) #cambiar por hr_label
     
     
     return loss
@@ -73,17 +73,17 @@ def calc_loss(pred_lr, target_lr,
 def print_metrics(metrics, epoch_samples_l1, epoch_samples_l2, epoch_samples_l3, epoch_samples_loss, phase,f): # print by epoch
     outputs = []
     epoch_samples = [epoch_samples_l1, epoch_samples_l2, epoch_samples_l3, 
-                     epoch_samples_loss, epoch_samples_l3, epoch_samples_l3] # l3 is unlab dice and jaccard now is from unlabel
+                     epoch_samples_loss,epoch_samples_l2, epoch_samples_l3] # l3 is unlab dice and jaccard now is from unlabel
     i = 0
     for k in metrics.keys():       #metricas(frist-mean-input.size)samples
         outputs.append("{}: {:4f}".format(k, metrics[k] / epoch_samples[i]))
         i += 1
     print("{}: {}".format(phase, ", ".join(outputs)))
-    f.write("{}: {}".format(phase, ", ".join(outputs)))
+    f.write("{}: {}".format(phase, ", ".join(outputs))+ "\n")
 ##_______________________________________________________________________________________________
 
 def train_model(name_file_HR,model_LR, model_HR, optimizer_ft, scheduler,dataloaders_HR_lab,
-                dataloaders_HR_unlab,dataloaders_LR, name_model_HR='UNet11,'n_steps, num_epochs=25):
+                dataloaders_HR_unlab,dataloaders_LR, fold_out,name_model_HR='UNet11',n_steps=15, num_epochs=25):
     #finally_path = Path('logs')
     #f = open('logs/history_model1.txt',"w+")
     #f = open("history_model.txt", "w+")
@@ -95,7 +95,7 @@ def train_model(name_file_HR,model_LR, model_HR, optimizer_ft, scheduler,dataloa
 
     best_loss = 1e10
     
-    f = open("history_paral/history_model{}_{}.txt".format(name_file_HR,name_model_HR), "w+")  
+    f = open("history_paral/history_model{}_{}_fold{}.txt".format(name_file_HR,name_model_HR,fold_out), "w+")  
      #--------------------------------------------------------
     upsample = nn.Upsample(scale_factor= 8, mode='bicubic')
     #------------------------------------------------------------   
@@ -158,9 +158,9 @@ def train_model(name_file_HR,model_LR, model_HR, optimizer_ft, scheduler,dataloa
                 optimizer_ft.zero_grad()
                 with torch.set_grad_enabled(phase == 'train'):
                     #outputs-----------------------------------
-                                    ############################### fake LR
-                    input_LR = nn.functional.interpolate(input_LR, scale_factor= 0.125, mode='bicubic')                 
-                    labels_LR = nn.functional.interpolate(labels_LR, scale_factor= 0.125, mode='bicubic')      ############################### end fake LR
+                    ############################### fake LR
+                    #input_LR = nn.functional.interpolate(input_LR, scale_factor= 0.125, mode='bicubic')                 
+                   # labels_LR = nn.functional.interpolate(labels_LR, scale_factor= 0.125, mode='bicubic')      ############################### end fake LR
                     pred_LR = model_LR(input_LR)
                     pred_HR_lab = model_HR(input_HR_lab)
                     inputs_HR_unlab_ds = nn.functional.interpolate(input_HR_unlab, scale_factor= 0.125, mode='bicubic')

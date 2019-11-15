@@ -34,16 +34,26 @@ def read_metric(out_file,stage,name_file, name,name_model):
     #return metric
 
 
-def plot_history_train(out_file,name_file,name_model):
-    file = open(("history_{}/history_model{}_{}.txt").format(out_file,name_file,name_model), "r")
+def plot_history_train(out_file,name_file,name_model,fold_out):
+    file = open(("history_{}/history_model{}_{}_fold{}.txt").format(out_file,name_file,name_model,fold_out), "r")
 
-    filedata = file.read()
+    filedata = file.read() 
+    #### distilation paral
+    filedata = filedata.replace("dataloader",",dataloader")
+    filedata = filedata.replace("saving",",saving")
+    filedata = filedata.replace("\n",", \n")
+
+    #### end distilation paral
+
+
     filedata = filedata.split(",")
     loss = []
     for i in filedata:
         i = i.strip(" ")
         #print(i)
-        if str(i).startswith("loss"):
+        #if str(i).startswith("loss"):
+
+        if str(i).startswith("loss:"):
             i = i.split(":")
             loss.append(float(i[1]))
             #print(i[1])
@@ -62,22 +72,28 @@ def plot_history_train(out_file,name_file,name_model):
     plt.plot(x[1:120:],y_val[1:120:],'k', label = 'val_loss')
     plt.legend()
     plt.show()
-    f.savefig(("history_{}/loss_convergence_{}_{}.pdf").format(out_file,name_file,name_model), bbox_inches='tight')
+    f.savefig(("history_{}/loss_convergence{}_{}.pdf").format(out_file,name_file,name_model), bbox_inches='tight')
     
 
 
-def plot_prediction(stage='test',name_file='_HR_60_fake',out_file='HR',name_model='UNet11', count=29): # #LR •dist
+def plot_prediction(stage='test',name_file='_HR_60_fake',out_file='HR',name_model='UNet11',fold_out=0,fold_in=0, count=30): # #LR •dist
 
-    loss_file = open(("predictions_{}/pred_loss_{}{}_{}.txt").format(out_file,stage,name_file,name_model))
+   # loss_file = open(("predictions_{}/pred_loss_{}{}_{}.txt").format(out_file,stage,name_file,name_model))
+    loss_file = open(("predictions_{}/pred_loss_{}{}_{}_foldout{}_foldin{}.txt").format(out_file,stage,name_file,name_model,fold_out,fold_in))
     #loss_file = open("predictions/pred_loss_HR_fake_60.txt")
   
     filedata = loss_file.read()
     filedata = filedata.replace("bce",",bce")
     filedata = filedata.split(",")
 
-    val_file = (("predictions_{}/inputs_{}{}_{}_{}.npy").format(out_file, stage, name_file, count,name_model))
-    pred_file =(("predictions_{}/pred_{}{}_{}_{}.npy").format(out_file, stage, name_file, count,name_model))
-    label_file = (("predictions_{}/labels_{}{}_{}_{}.npy").format(out_file, stage, name_file, count,name_model))
+    val_file = (("predictions_{}/inputs_{}{}_{}_{}_fold{}.npy").format(out_file, stage, name_file, count,name_model,fold_out))
+    pred_file =(("predictions_{}/pred_{}{}_{}_{}_fold{}.npy").format(out_file, stage, name_file, count,name_model,fold_out))
+    label_file = (("predictions_{}/labels_{}{}_{}_{}_fold{}.npy").format(out_file, stage, name_file, count,name_model,fold_out))
+
+    
+    #val_file = (("predictions_{}/inputs_{}{}_{}_{}.npy").format(out_file, stage, name_file, count,name_model))
+    #pred_file =(("predictions_{}/pred_{}{}_{}_{}.npy").format(out_file, stage, name_file, count,name_model))
+    #label_file = (("predictions_{}/labels_{}{}_{}_{}.npy").format(out_file, stage, name_file, count,name_model))
 
     #val_file = "predictions/inputs_testHR_60fake29.npy"
     #pred_file = "predictions/pred_testHR_60fake29.npy"
@@ -100,12 +116,12 @@ def plot_prediction(stage='test',name_file='_HR_60_fake',out_file='HR',name_mode
     
 ###############################call the functions
 
-plot_history_train(out_file='LR', name_file='_LR',name_model='UNet11')   
 
-def plotting_figures(stage,name_file,out_file,name_model='UNet11',count=29):
+
+def plotting_figures(stage,name_file,out_file,name_model='UNet11',fold_out=0, fold_in=0,count=29):
     #stage='test',name_file='_HR_60_fake',out_file='HR',count=29) # #LR •dist
 
-    plot_history_train(out_file, name_file,name_model)   
+    plot_history_train(out_file, name_file,name_model,fold_out)   
     plot_prediction(stage, name_file, out_file, name_model,count) # #LR •dist
     #plot_prediction(stage='val',name_file=,out_file,count=11) # #LR •dist
 
@@ -119,8 +135,12 @@ def plotting_figures(stage,name_file,out_file,name_model='UNet11',count=29):
 #plotting_figures(stage='test',name_file='_dist_60',out_file='HR',name_model='UNet11',count=94)
 #plotting_figures(stage='test',name_file='_dist_60_2',out_file='HR',name_model='UNet11',count=94)
 
+####################################
+#plot_prediction(stage='test',name_file='_6_percent',out_file='HR',name_model='UNet11',fold_out=0,fold_in=3, count=30)
+
 ############################### LR
-plotting_figures(stage='test',name_file='_LR',out_file='LR',name_model='UNet11', count=613)
+#plotting_figures(stage='test',name_file='_LR',out_file='LR',name_model='UNet11', count=613)
 
 ############################### LR plotting history
 #plot_history_train(out_file='LR',name_file='_LR',name_model='UNet11') #change the name output
+#plot_history_train(out_file='LR', name_file='_LR',name_model='UNet11')   

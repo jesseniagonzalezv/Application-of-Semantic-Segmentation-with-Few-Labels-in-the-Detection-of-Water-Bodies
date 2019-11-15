@@ -70,7 +70,7 @@ def cal_dir_stat(im_pths, maximunValue): ##give the names
     return rgb_mean, rgb_std
 
 
-def meanstd(train_root,val_root, test_root,name_file,rootdata='data_HR'):
+def meanstd(train_root,val_root, test_root,rootdata='data_HR'): #name_file,
     data_path = Path(rootdata)
     #train_root= str(data_path/'train{}'/'images').format(name_file)
     #val_root= str(data_path/'val{}'/'images').format(name_file)
