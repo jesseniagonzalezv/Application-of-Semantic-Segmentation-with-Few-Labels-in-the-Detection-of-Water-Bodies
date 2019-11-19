@@ -37,19 +37,24 @@ Dataset Perusat--- HR
 Dataset Sentienl--- LR
 
 
+Run each Model:
+        Run_HR: 
+        1. python train_HR.py
+        2. python plotting.py  (need path roots)
 
-Run_HR: 
-1. python train_HR.py
-2. python plotting.py  (need path roots)
+        Run_LR: 
+        1. python train_LR.py
+        2. python plotting.py  (need path roots)
 
-Run_LR: 
-1. python train_LR.py
-2. python plotting.py  (need path roots)
+        Model Combined Parallel: 
+        1. python train_paral.py
+        2. python plotting.py  (need path roots)
 
-Model Combined Parallel: 
-1. python train_paral.py
-2. python plotting.py  (need path roots)
+        Model Combined Sequential: 
+        1. python train_seq.py
+        2. python plotting.py  (need path roots)
 
-Model Combined Sequential: 
-1. python train_seq.py
-2. python plotting.py  (need path roots)
+Run all the models and compare:
+        bash test_all.sh
+        bash plot_prediction.sh
+        python dice_comparation.py
