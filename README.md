@@ -37,7 +37,7 @@ Dataset Perusat--- HR
 Dataset Sentienl--- LR
 
 
-Run each Model:
+### Run each Model:
         Run_HR: 
         1. python train_HR.py
         2. python plotting.py  (need path roots)
@@ -54,7 +54,7 @@ Run each Model:
         1. python train_seq.py
         2. python plotting.py  (need path roots)
 
-Run all the models and compare:
-        bash test_all.sh
-        bash plot_prediction.sh
-        python dice_comparation.py
+### Run all the models and compare:
+        1. bash test_all.sh
+        2. bash plot_prediction.sh
+        3. python dice_comparation.py
