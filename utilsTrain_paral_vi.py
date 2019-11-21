@@ -13,9 +13,6 @@ from loss import dice_loss,metric_jaccard
 import os
 import torch.nn as nn
 
-import cv2
-from skimage.io import imread, show
-
 
 
 
@@ -26,74 +23,6 @@ if (device=='cpu'):
 else:
     print('CUDA is available!  Training on GPU ...')
 
-
-
-
-def upsampling_HR(imagen_LR,scale,keepdims=False):
-
-    lr_img = imagen_LR.transpose((1, 2, 0))  
-    
-    #print(np.shape(lr_img))
-    #plt.imshow(lr_img[:,:,0]/lr_img.max())# ·HR
-    #plt.show()
-    lr_img_dims = (lr_img.shape[1], lr_img.shape[0])
-    #print(hr_img_dims)
-
-        # Downsample image 2.8/10 x   ----
-    hr_img_x = cv2.resize(lr_img, (0, 0), fx=scale, fy=scale,
-                               interpolation=cv2.INTER_CUBIC)
-
-    if keepdims==True:
-        hr_img_x = cv2.resize(hr_img_x, hr_img_dims,
-                                   interpolation=cv2.INTER_CUBIC)
-    else:
-        hr_img_x = cv2.resize(hr_img_x, (512,512),
-                                   interpolation=cv2.INTER_CUBIC)
-    #cv2.imwrite(os.path.join(lr_image_dir + "/x", filename), lr_img_x)
-    #plt.imshow(hr_img_x/hr_img_x.max()) #HR
-    #plt.show()
-    #print(hr_img_x.shape)
-  
-    return hr_img_x
-
-
-
-
-def downsampling_LR(imagen_HR,scale,keepdims=False):
-
-    # Read HR image
-    #hr_image_dir='/home/jgonzalez/Test_2019/Test_network/'
-    #lr_image_dir='/home/jgonzalez/Test_2019/Test_network/imagetiffLR'
-
-    # Create LR image dirs
-    #os.makedirs(lr_image_dir + "/x", exist_ok=True)
-    
-    #########################################################
-    hr_img = imagen_HR.transpose((1, 2, 0))
-    #########################################################
-    #hr_img = np.load(imagen_HR).transpose((1, 2, 0))  #
-    #print('hr',np.shape(hr_img))
-    #plt.imshow(hr_img/hr_img.max())
-    #plt.show()
-    hr_img_dims = (hr_img.shape[1], hr_img.shape[0])
-    #print(hr_img_dims)
-
-        # Downsample image 2.8/10 x   ----
-    lr_img_x = cv2.resize(hr_img, (0, 0), fx=scale, fy=scale,
-                               interpolation=cv2.INTER_CUBIC)
-
-    if keepdims==True:
-        lr_img_x = cv2.resize(lr_img_x, hr_img_dims,
-                                   interpolation=cv2.INTER_CUBIC)
-    else:
-        lr_img_x = cv2.resize(lr_img_x, (64,64),
-                                   interpolation=cv2.INTER_CUBIC)
-    #cv2.imwrite(os.path.join(lr_image_dir + "/x", filename), lr_img_x)
-    #plt.imshow(lr_img_x/lr_img_x.max())
-    #plt.show()
-    #print('lr',lr_img_x.shape)
-  
-    return lr_img_x
 
 
 def calc_loss(pred_lr, target_lr, 
@@ -168,7 +97,7 @@ def train_model(name_file_HR,model_LR, model_HR, optimizer_ft, scheduler,dataloa
     
     f = open("history_paral/history_model{}_{}_fold{}.txt".format(name_file_HR,name_model_HR,fold_out), "w+")  
      #--------------------------------------------------------
-    #upsample = nn.Upsample(scale_factor= 8,  mode='bicubic') 
+    upsample = nn.Upsample(scale_factor= 8,  mode='bicubic') 
     #upsample = nn.Upsample(size=64,scale_factor= 3.57,  mode='bicubic') 
 
     #------------------------------------------------------------   
@@ -224,10 +153,8 @@ def train_model(name_file_HR,model_LR, model_HR, optimizer_ft, scheduler,dataloa
                 labels_LR = labels_LR.to(device)
                 input_HR_lab = input_HR_lab.to(device)
                 labels_HR_lab = labels_HR_lab.to(device)
-                ###############################
-                #input_HR_unlab = input_HR_unlab.to(device)
-                input_HR_unlab = input_HR_unlab.numpy()
-                ###############################
+                input_HR_unlab = input_HR_unlab.to(device)
+                
 
 
                 optimizer_ft.zero_grad()
@@ -238,28 +165,12 @@ def train_model(name_file_HR,model_LR, model_HR, optimizer_ft, scheduler,dataloa
                    # labels_LR = nn.functional.interpolate(labels_LR, scale_factor= 0.125, mode='bicubic')      ############################### end fake LR
                     pred_LR = model_LR(input_LR)
                     pred_HR_lab = model_HR(input_HR_lab)
-                    ###############################
-                    #inputs_HR_unlab_ds = nn.functional.interpolate(input_HR_unlab, scale_factor= 0.125, mode='bicubic')
-                    input_HR_unlab_ds=[]
-                    for idx in enumerate((input_HR_unlab)):
-                        print(idx)
-                        lr_img_x=downsampling_LR(input_HR_unlab[idx],scale=2.8/10)
-                        lr_img_x=torch.from_numpy(np.moveaxis(lr_img_x, -1, 0)).float().to(device)
+                    inputs_HR_unlab_ds = nn.functional.interpolate(input_HR_unlab, scale_factor= 0.125, mode='bicubic')
 
-                        #input_HR_unlab_ds.append(torch.from_numpy(np.moveaxis(lr_img_x, -1, 0)))
-                    ###############################
-                    pred_HR_unlab_ds=model_LR(((lr_img_x)).float().to(device))
-                    #pred_HR_unlab_ds = model_LR(inputs_HR_unlab_ds)
+                    #inputs_HR_unlab_ds = nn.functional.interpolate(input_HR_unlab,size=64, scale_factor= 0.28, mode='bicubic')
                     
-                    #target_HR_unlab_us = upsample(pred_HR_unlab_ds)
-                    target_HR_unlab_us=[]
-                    for idx in range(len(pred_HR_unlab_ds)):
-                        pred_LR=pred_HR_unlab_ds[idx].to('cpu').detach().numpy()                    
-                        target_HR_unlab_us.append((upsampling_HR(pred_LR,scale=10/2.8)))
-
-                    #target_HR_unlab_us=(torch.from_numpy(np.asarray(target_HR_unlab_us))).float().to(device)
-                    target_HR_unlab_us=(torch.from_numpy((target_HR_unlab_us))).float().to(device)
-                    
+                    pred_HR_unlab_ds = model_LR(inputs_HR_unlab_ds)
+                    target_HR_unlab_us = upsample(pred_HR_unlab_ds)
                     #target_HR_unlab_us[target_HR_unlab_us > 1] = 1
                     #target_HR_unlab_us[target_HR_unlab_us < 0] = 0
                     #print('target_out',target_HR_unlab_us)

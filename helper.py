@@ -57,7 +57,7 @@ def plot_img_array(img_array, filedata,save,out_file, name_output, ncol=3):
             temp1 = str(m_jaccard[count])
             #print(temp,count)
             count += 1
-            plots[i // ncol, i % ncol].set_title("dice: " + temp +" IoU: " + temp1)
+            plots[i // ncol, i % ncol].set_title("Nº:"+str(count) + " dice: " + temp +" IoU: " + temp1)
         plots[i // ncol, i % ncol].imshow(img_array[i])
     if(save==1):
         f.savefig(("predictions_{}/prediction_{}.pdf").format(out_file,name_output), bbox_inches='tight') #last same this

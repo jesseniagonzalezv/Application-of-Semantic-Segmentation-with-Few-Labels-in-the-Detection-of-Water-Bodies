@@ -150,9 +150,11 @@ def main():
       #Data-paths:--------------------------HR-------------------------------------
 ############################  
     # nested cross validation K-fold train test
+    ############################  
+
     #train_val_file_names, test_file_names_HR = get_split_out(data_path_HR,data_all,args.fold_out)
-    train_val_file_names=np.array(sorted(glob.glob(str(data_path_HR/'data_915'/'images')+ "/*.npy")))
-    test_file_names_HR =  np.array(sorted(glob.glob(str(data_path_HR/'test_915'/'images') + "/*.npy")))
+    train_val_file_names=np.array(sorted(glob.glob(str(data_path_HR/'data_850'/'images')+ "/*.npy")))
+    test_file_names_HR =  np.array(sorted(glob.glob(str(data_path_HR/'test_850'/'images') + "/*.npy")))
     
     if args.percent !=1:
         extra, train_val_file_names= percent_split(train_val_file_names, args.percent) 
@@ -160,8 +162,8 @@ def main():
     train_file_HR_lab,val_file_HR_lab = get_split_in(train_val_file_names,args.fold_in)    
     
     #train_file_HR_lab, val_file_HR_lab = get_files_names(data_path_HR,name_file_HR)
-    np.save(str(os.path.join(out_path,"train_files{}_{}_fold{}.npy".format(name_file_HR,args.modelHR,args.fold_out))), train_file_HR_lab)
-    np.save(str(os.path.join(out_path,"val_files{}_{}_fold{}.npy".format(name_file_HR,args.modelHR,args.fold_out))), val_file_HR_lab)
+    np.save(str(os.path.join(out_path,"train_files{}_{}_fold{}_{}.npy".format(name_file_HR, args.modelHR,args.fold_out,args.fold_in))), train_file_HR_lab)
+    np.save(str(os.path.join(out_path,"val_files{}_{}_fold{}_{}.npy".format(name_file_HR, args.modelHR,args.fold_out,args.fold_in))), val_file_HR_lab)
     
       
 
