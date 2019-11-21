@@ -76,7 +76,8 @@ def find_metrics(train_file_names,val_file_names, test_file_names, max_values, m
     f = open(("predictions_{}/metric{}_{}_foldout{}_foldin{}.txt").format(out_file,name_file,name_model,fold_out, fold_in), "w+")
     f2 = open(("predictions_{}/pred_loss_test{}_{}_foldout{}_foldin{}.txt").format(out_file,name_file,name_model, fold_out, fold_in), "w+")
     #f3 = open(("predictions_{}/pred_loss_val{}_{}.txt").format(out_file,name_file,name_model), "w+")
-    
+    f.write("Training mean_values:[{}], std_values:[{}] \n".format(mean_values, std_values))
+
     #####Initialise the model ######################I am transfer the model#########################MAKE CODE MODELSSSS
     '''  num_classes = 1 
         
@@ -294,9 +295,9 @@ def find_metrics(train_file_names,val_file_names, test_file_names, max_values, m
     f.write("dice_metric: {:4f}, std: {:4f} \n".format(np.mean(result_dice3),np.std(result_dice3)))
     f.write("jaccard_metric: {:4f}, std: {:4f}  \n".format(np.mean(result_jaccard3), np.std(result_jaccard3)))
     
-    #np.save(str(os.path.join(outfile_path,"inputs_test{}_{}_{}_fold{}.npy".format(name_file,int(count),name_model,fold_out))), np.array(input_vec))
-    #np.save(str(os.path.join(outfile_path,"labels_test{}_{}_{}_fold{}.npy".format(name_file,int(count),name_model, fold_out))), np.array(labels_vec))
-    #np.save(str(os.path.join(outfile_path,"pred_test{}_{}_{}_fold{}.npy".format(name_file,int(count),name_model, fold_out))), np.array(pred_vec))
+    np.save(str(os.path.join(outfile_path,"inputs_test{}_{}_{}_fold{}.npy".format(name_file,int(count),name_model,fold_out))), np.array(input_vec))
+    np.save(str(os.path.join(outfile_path,"labels_test{}_{}_{}_fold{}.npy".format(name_file,int(count),name_model, fold_out))), np.array(labels_vec))
+    np.save(str(os.path.join(outfile_path,"pred_test{}_{}_{}_fold{}.npy".format(name_file,int(count),name_model, fold_out))), np.array(pred_vec))
 
 
     

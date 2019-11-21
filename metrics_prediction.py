@@ -110,8 +110,9 @@ def find_metrics(train_file_names,val_file_names,max_values, mean_values, std_va
         
     f = open(("predictions_{}/metric{}_{}.txt").format(out_file,name_file,name_model), "w+")
     f2 = open(("predictions_{}/pred_loss_test{}_{}.txt").format(out_file,name_file,name_model), "w+")
-    f3 = open(("predictions_{}/pred_loss_val{}_{}.txt").format(out_file,name_file,name_model), "w+")
-    
+    #f3 = open(("predictions_{}/pred_loss_val{}_{}.txt").format(out_file,name_file,name_model), "w+")
+    f.write("mean_values:{}, std_values:{} \n".format(mean_values, std_values))
+
     #####Initialise the model ###############################################MAKE CODE MODELSSSS
     num_classes = 1 
         

@@ -44,7 +44,7 @@ def percent_split(train_val_100percent, percent = 1):
     print(dataset_size,len(train_indices_split), len(extra_indices))
     
    
-    return train_val_100percent[train_indices_split] #
+    return train_val_100percent[extra_indices],train_val_100percent[train_indices_split] #
     
     
 def get_split_in(train_file_names, fold, num_splits=5):

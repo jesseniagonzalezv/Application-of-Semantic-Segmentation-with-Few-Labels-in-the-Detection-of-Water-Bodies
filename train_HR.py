@@ -89,7 +89,7 @@ def main():
     data_path = Path('data_HR') # change the data path here 
     
     name_file = '_'+ str(int(args.percent*100))+'_percent'
-    data_all='data'
+    data_all='data' ##file que contiene todo la data 
     #name_file='_HR_100'
     #name_file='_HR_400'
     #name_file='_HR_916' 
@@ -105,21 +105,26 @@ def main():
     #val_path= str(data_path/'val{}'/'images').format(name_file)+ "/*.npy" 
     #train_file_names = np.array(sorted(glob.glob(train_path)))
     #val_file_names = np.array(sorted(glob.glob(val_path)))
-    #################################################################################  
-    # cross validation K-fold train test
-    train_val_file_names, test_file_names = get_split_out(data_path,data_all,args.fold_out)
     
-    if args.percent !=1:
-        train_val_file_names= percent_split(train_val_file_names, args.percent) 
-
+    #################################################################################  
+    # Nested cross validation K-fold train test
+    #train_val_file_names, test_file_names = get_split_out(data_path,data_all,args.fold_out)
     #################################################################################  
 
+    train_val_file_names=np.array(sorted(glob.glob(str(data_path/'data_850'/'images')+ "/*.npy")))
+    test_file_names =  np.array(sorted(glob.glob(str(data_path/'test_850'/'images') + "/*.npy")))
+    if args.percent !=1:
+        extra, train_val_file_names= percent_split(train_val_file_names, args.percent) 
+
+    #################################################################################  
+    
+ 
     
     train_file_names,val_file_names = get_split_in(train_val_file_names,args.fold_in)    #train_file_names, val_file_names = get_files_names(data_path,name_file)
 
 
-    np.save(str(os.path.join(out_path,"train_files{}_{}_fold{}.npy".format(name_file,args.model,args.fold_out))), train_file_names)
-    np.save(str(os.path.join(out_path,"val_files{}_{}_fold{}.npy".format(name_file,args.model,args.fold_out))), val_file_names)
+    np.save(str(os.path.join(out_path,"train_files{}_{}_fold{}_{}.npy".format(name_file,args.model,args.fold_out,args.fold_in))), train_file_names)
+    np.save(str(os.path.join(out_path,"val_files{}_{}_fold{}_{}.npy".format(name_file,args. model,args.fold_out, args.fold_in))), val_file_names)
     
     ######## 733
     #train_path= data_path/'train'/'images'
@@ -149,7 +154,7 @@ def main():
             pin_memory=torch.cuda.is_available() #### in process arguments
         )
     ########return value of mean_std_train
-    max_values, mean_values, std_values=meanstd(train_file_names, val_file_names,test_file_names,name_file,str(data_path)) #_60 --data_HR, data_LR
+    max_values, mean_values, std_values=meanstd(train_file_names, val_file_names,test_file_names,str(data_path)) #_60 --data_HR, data_LR
 
     train_transform = DualCompose([
         CenterCrop(512),
