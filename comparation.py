@@ -37,10 +37,10 @@ def get_metrics(out_file,stage,name_file, name,name_model,fold_out,fold_in):
     
 #############################################################################
     
-def metrics_values():
-    f = open("comparative_metrics/compare_metrics_models.txt", "w+")
+def metrics_values(name):
+    f = open("comparative_metrics/compare_metrics_models_jaccard.txt", "w+")
     name_model='UNet11'
-    name='dice_metric'
+    #name= 'jaccard_metric' #'dice_metric'
     stage='test'
     fold_out=0
 
@@ -66,13 +66,13 @@ def metrics_values():
 
             
 #############################################################################
-
-#metrics_values()
+#metrics_values(name='dice_metric')
+#metrics_values(name='jaccard_metric')
 #############################################################################
 def comparative_dice(percent,name_model,fold_out,fold_in):
-    dice_HR=read_data(("/home/jgonzalez/Test_2019/Test_network/model_LR_HR/predictions_HR/pred_loss_test_{}_percent_{}_foldout{}_foldin{}.txt").format((percent),name_model,(fold_out), (fold_in)), name="dice")
-    dice_dist_paral=read_data(("/home/jgonzalez/Test_2019/Test_network/model_LR_HR/predictions_paral/pred_loss_test_{}_percent_{}_foldout{}_foldin{}.txt").format((percent),name_model,(fold_out), (fold_in)), name="dice")
-    dice_dist_seq=read_data(("/home/jgonzalez/Test_2019/Test_network/model_LR_HR/predictions_seq/pred_loss_test_{}_percent_{}_foldout{}_foldin{}.txt").format((percent),name_model,(fold_out), (fold_in)), name="dice")
+    dice_HR=read_data(("/home/jgonzalez/Test_2019/Test_network/model_LR_HR/predictions_HR/pred_loss_test_{}_percent_{}_foldout{}_foldin{}.txt").format((percent),name_model,(fold_out), (fold_in)), name="jaccard") #name="dice")
+    dice_dist_paral=read_data(("/home/jgonzalez/Test_2019/Test_network/model_LR_HR/predictions_paral/pred_loss_test_{}_percent_{}_foldout{}_foldin{}.txt").format((percent),name_model,(fold_out), (fold_in)), name="jaccard") #name="dice")
+    dice_dist_seq=read_data(("/home/jgonzalez/Test_2019/Test_network/model_LR_HR/predictions_seq/pred_loss_test_{}_percent_{}_foldout{}_foldin{}.txt").format((percent),name_model,(fold_out), (fold_in)), name="jaccard") #name="dice")
     #dice_dist_100=read_data("/home/jgonzalez/Test_2019/Test_network/model_LR_HR_paralel/predictions/pred_loss_dist_paral_100.txt",name="dice")
 
     y_HR = dice_HR #np.asarray(dice_HR)
@@ -141,7 +141,7 @@ def comparative_plot(percent,y_HR,y_dist_paral,y_dist_seq,fold_out,fold_in,avera
         plt.close()
 
 ###################################################################################
-def comparative_perce_plot(out_file='HR',stage='test'):
+def comparative_perce_plot(out_file='HR',stage='test',name='dice'):
     name_model='UNet11'
     
     name_file_1='_8_percent'
@@ -212,27 +212,44 @@ def comparative_perce_plot(out_file='HR',stage='test'):
             path5=(("predictions_{}/pred_loss_{}{}_{}_foldout{}_foldin{}.txt").format(out_file,stage,name_file_5,name_model,fold_out, fold_in))
 
 
-            dice_HR_1=read_data(path1, name="dice")
+            dice_HR_1=read_data(path1, name)
             dice_in_1.append(np.mean(dice_HR_1))
+            print('8 values')
+            print('24',dice_HR_1[23])
+            print('89',dice_HR_1[88])
+            print('91',dice_HR_1[90])
+
+
             '''
             print('dice_HR_8',np.mean(dice_HR_1),dice_in_1)
             print('bad_sample',dice_HR_1[89])'''
             
-            dice_HR_2=read_data(path2, name="dice")
+            dice_HR_2=read_data(path2, name)
             dice_in_2.append(np.mean(dice_HR_2))
             #print('dice_HR_20',np.mean(dice_HR_2),dice_in_2)
 
-            dice_HR_3=read_data(path3, name="dice")
+            dice_HR_3=read_data(path3, name)
             dice_in_3.append(np.mean(dice_HR_3))
             #print('dice_HR_40',np.mean(dice_HR_3),dice_in_3)
 
-            dice_HR_4=read_data(path4, name="dice")
+            dice_HR_4=read_data(path4, name)
             dice_in_4.append(np.mean(dice_HR_4))
             #print('dice_HR_80',np.mean(dice_HR_4),dice_in_4)
             
-            dice_HR_5=read_data(path5, name="dice")
+            dice_HR_5=read_data(path5, name)
             dice_in_5.append(np.mean(dice_HR_5))
-
+            print('80 values')
+            print('24',dice_HR_4[23])
+            print('89',dice_HR_4[88])
+            print('91',dice_HR_4[90])
+            
+            print('\n mean 80--')
+            print('14',dice_HR_4[13])
+            print('12',dice_HR_4[11])
+            print('42',dice_HR_4[41])
+            print('74',dice_HR_4[73])
+            print('93',dice_HR_4[92])   
+            print('90',dice_HR_4[89])
             y_HR_1 = np.asarray(dice_HR_1)
             y_HR_2 = np.asarray(dice_HR_2)
             y_HR_3 = np.asarray(dice_HR_3)
@@ -286,7 +303,22 @@ def comparative_perce_plot(out_file='HR',stage='test'):
     y_3_all=np.mean(y_3_all,axis=0)
     y_4_all=np.mean(y_4_all,axis=0)
     y_5_all=np.mean(y_5_all,axis=0)
-
+    print('mean 8')
+    print('24',y_1_all[23])
+    print('89',y_1_all[88])
+    print('91',y_1_all[90])
+    print('mean 80')
+    print('24',y_4_all[23])
+    print('89',y_4_all[88])
+    print('91',y_4_all[90])
+    
+    print('mean 80')
+    print('14',y_4_all[13])
+    print('12',y_4_all[11])
+    print('42',y_4_all[41])
+    print('74',y_4_all[73])
+    print('93',y_4_all[92])   
+    print('90',y_4_all[89])
 
     ax6.plot(x,y_1_all ,'.', label = '8_percent')
     ax6.plot(x,y_2_all ,'*', label = '20_percent')
@@ -310,9 +342,19 @@ def comparative_perce_plot(out_file='HR',stage='test'):
     
     return y_1_all,y_2_all,y_3_all,y_4_all,y_5_all  # average 8,20,40,80
 #############################################################################
+print(' -dice')
+comparative_perce_plot(out_file='HR',stage='test',name='dice')
+print('jaccard')
+comparative_perce_plot(out_file='HR',stage='test',name='jaccard')
+print(' ---------------------------------------------------------------------')
 
-#comparative_perce_plot(out_file='HR',stage='test')
-#comparative_perce_plot(out_file='paral',stage='test')
+print('parala')
+print('parala -dice')
+
+comparative_perce_plot(out_file='paral',stage='test',name='dice')
+print('parala -jacara')
+
+comparative_perce_plot(out_file='paral',stage='test',name='jaccard')
 
 #############################################################################
 
@@ -406,7 +448,7 @@ def water_images_v1(path):
     f.savefig("comparative_metrics/sample_vs_metric_all_water.pdf", bbox_inches='tight')
     plt.close()
 ###########    
-water_images_v1("data_HR/test_850/masks")
+#water_images_v1("data_HR/test_850/masks")
 
 
 #############################################################################
@@ -497,8 +539,7 @@ def water_images_v2(path):
     f.savefig("comparative_metrics/water_vs_metric_all.pdf", bbox_inches='tight')
     plt.close()
 #############################################################################
-    
-water_images_v2("data_HR/test_850/masks")
+#water_images_v2("data_HR/test_850/masks")
 
 #############################################################################
 #############################################################################
@@ -557,7 +598,7 @@ def main():
         y_HR_all=np.mean(y_HR_all,axis=0)
         y_dist_paral_all=np.mean(y_dist_paral_all,axis=0)
         y_dist_seq_all=np.mean(y_dist_seq_all,axis=0)       
-        #print('3-hr',y_HR_all,'paral',y_dist_paral_all,'seq',y_dist_seq_all)   
+        print('3-hr',y_HR_all,'paral',y_dist_paral_all,'seq',y_dist_seq_all)   
         comparative_plot(perc,y_HR_all,y_dist_paral_all,y_dist_seq_all,fold_out=int(i),fold_in=int(j),average='average')
 
     return y_HR_all,y_dist_paral_all,y_dist_seq
@@ -565,5 +606,5 @@ def main():
 #all_comparative_dice(percent=[6],name_model='UNet11',fold_out=[0],fold_in=[0,1,2,3,4])
 #all_comparative_dice(percent=[70],name_model='UNet11',fold_out=[0],fold_in=[0,2,4])
 
-if __name__ == '__main__':
-    main()
+#if __name__ == '__main__':
+#    main()
