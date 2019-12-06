@@ -24,7 +24,7 @@ def plot_img_array(img_array,save, ncol=2):
         plots[i // ncol, i % ncol]
         plots[i // ncol, i % ncol].imshow(img_array[i])
     if(save==1):
-        f.savefig("predictions/unlabeled_test/unlabeled_prediction_dist.pdf", bbox_inches='tight')
+        f.savefig("predictions_HR/unlabel_test/unlabeled_prediction.pdf", bbox_inches='tight')
     
 
 def plot_side_by_side(img_arrays,save=0):

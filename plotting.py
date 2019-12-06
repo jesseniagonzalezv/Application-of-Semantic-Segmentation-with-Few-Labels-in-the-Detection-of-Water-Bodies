@@ -129,7 +129,7 @@ def main():
     args = parser.parse_args()
     
 
-    #plot_history_train(args.out_file, args.name_file,args.name_model,args.fold_out)   
+    plot_history_train(args.out_file, args.name_file,args.name_model,args.fold_out)   
     plot_prediction(args.stage, args.name_file, args.out_file, args.name_model,args.fold_out,args.fold_in,args.count) # #LR •dist
     #dice=read_metric(args.out_file, args.stage, args.name_file, name='dice',name_model=args.name_model,fold_out=args.fold_out,fold_in=args.fold_in)
     #jaccard=read_metric(args.out_file, args.stage, args.name_file, name='jaccard',name_model=args.name_model,fold_out=args.fold_out,fold_in=args.fold_in)

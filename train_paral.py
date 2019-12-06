@@ -77,6 +77,16 @@ def main():
 
     else:
         model_LR = UNet11(num_classes = num_class, input_channels=4)
+        #--------------------------model LR-------------------------------------
+        #PATH_modelLR= 'logs_LR/mapping/model_40epoch_LR_UNet11.pth'
+
+        #Initialise the model
+        #model_LR = UNet11(num_classes=num_classes)
+        #model_LR.cuda()
+        #model_LR.load_state_dict(torch.load(PATH_modelLR))
+        #--------------------------model LR-------------------------------------
+
+        
         model_HR = UNet11(num_classes = num_class, input_channels=4)
         #mean_LR:[0.11952524 0.1264638  0.13479991 0.15017026]
         #std_LR:[0.08844988 0.07304429 0.06740904 0.11003125]

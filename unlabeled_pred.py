@@ -31,7 +31,7 @@ model.load_state_dict(torch.load(PATH))
 model.eval()   # Set model to evaluate mode
 
 ######################### setting all data paths#######
-outfile_path = 'predictions/unlabel_test/'
+outfile_path = 'predictions_HR/unlabel_test/'
 data_path = 'data_HR'
 #test_path= "data_HR/unlabel/images_jungle"  #crear otro test
 test_path= "data_HR/unlabel/images"  #crear otro test
@@ -69,5 +69,5 @@ for inputs , name in test_loader:
         pred_vec.append(pred.data.cpu().numpy())
         count += 1
         print(count)
-np.save(outfile_path + "inputs_unlab_dist" + str(count) + ".npy" , np.array(input_vec))
-np.save(outfile_path + "pred_unlab_dist" +  str(count) + ".npy" , np.array(pred_vec))
+np.save(outfile_path + "inputs_unlab" + str(count) + ".npy" , np.array(input_vec))
+np.save(outfile_path + "pred_unlab" +  str(count) + ".npy" , np.array(pred_vec))
