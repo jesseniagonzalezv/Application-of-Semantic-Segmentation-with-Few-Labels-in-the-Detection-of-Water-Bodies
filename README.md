@@ -1,4 +1,10 @@
+# Segmentation_water_bodies_Peru
+----------
 
+
+This project consist of two dataset:
+Sentinel: data_HR
+PeruSat_1: data_VHR
 
 How to run
 ----------
@@ -6,55 +12,60 @@ The dataset is organized in the folloing way::
 ::
 
         ├── data_HR
-        │   ├── test
+        │   ├── test_HR
         │           ├── images
         │           └── masks
-        │   └── val
+        │   └── train_val_HR
         │           ├── images
         │           └── masks
-        │   └── train
+        ├── data_VHR
+        │   ├── test_850
         │           ├── images
         │           └── masks
-        ├── data_LR
-        │   ├── test
+        │   └── train_val_850
         │           ├── images
         │           └── masks
-        │   └── val
-        │           ├── images
-        │           └── masks
-        │   └── train
-        │           ├── images
-        │           └── masks
-        ├── logs_LR
+        ├── logs_HR
         │   ├── mapping
         │           ├── 
-        ├── predictions
-        ├── history
+        ├── predictions_HR
+        ├── history_HR
+        ├── logs_VHR
+        │   ├── mapping
+        │           ├── 
+        ├── predictions_VHR
+        ├── history_VHR
+        ├── logs_paral
+        │   ├── mapping
+        │           ├── 
+        ├── predictions_paral
+        ├── history_paral
+        ├── logs_seq
+        │   ├── mapping
+        │           ├── 
+        ├── predictions_seq
+        ├── history_seq
         │ ......................
-
-# Segmentation_water_bodies_Peru
-Dataset Perusat--- HR
-Dataset Sentienl--- LR
 
 
 ### Run each Model:
-        Run_HR: 
-        1. python train_HR.py
-        2. python plotting.py  (need path roots)
+        1. In train_model.sh there is a example how the models were trained.
 
-        Run_LR: 
-        1. python train_LR.py
-        2. python plotting.py  (need path roots)
+        Run HR Sentinel:
+        #python train.py --batch-size 8 --lr 1e-3  --n-epochs 40  --model 'UNet11' --dataset-path 'data_HR' --dataset-file 'HR' --train-val-file 'train_val_HR' --test-file 'test_HR'
+        #python plotting.py --out-file 'HR' --stage 'test' --name-file '_100_percent_HR' --name-model 'UNet11' --epochs 40 --count 613
 
-        Model Combined Parallel: 
-        1. python train_paral.py
-        2. python plotting.py  (need path roots)
+        Run VHR Perusat: 
+        python train.py --percent 0.08 --batch-size 4 --lr 1e-3  --n-epochs 40  --model 'UNet11' --dataset-path 'data_VHR' --dataset-file 'VHR' --train-val-file 'train_val_850' --test-file 'test_850'
+        python plotting.py --out-file 'VHR' --stage 'test' --name-file '_8_percent_VHR' --name-model 'UNet11' --epochs 40 --count 94
+        
+        Run Parallel
+        python train_paral.py --percent 0.08 --batch-size 4 --n-epochs 40 --n-steps 34  --lr 1e-3   --modelVHR 'UNet11' --dataset-path-HR 'data_HR'  --dataset-path-VHR 'data_VHR' --train-val-file-HR 'train_val_HR'   --test-file-HR 'test_HR' --train-val-file-VHR 'train_val_850' --test-file-VHR 'test_850'
+        python plotting.py --out-file 'paral' --stage 'test' --name-file '_8_percent_paral' --name-model 'UNet11' --epochs 40 --count 94
 
-        Model Combined Sequential: 
-        1. python train_seq.py
-        2. python plotting.py  (need path roots)
+        Run sequential
+        python train_seq.py --percent 0.08 --batch-size 4 --n-epochs 40 --n-steps 34  --lr 1e-3   --modelVHR 'UNet11' --dataset-path-HR 'data_HR'  --dataset-path-VHR 'data_VHR' --train-val-file-HR 'train_val_HR'   --test-file-HR 'test_HR' --train-val-file-VHR 'train_val_850' --test-file-VHR 'test_850'
+        python plotting.py --out-file 'seq' --stage 'test' --name-file '_8_percent_seq' --name-model 'UNet11' --epochs 40 --count 94
 
-### Run all the models and compare:
-        1. bash test_all.sh
-        2. bash plot_prediction.sh
-        3. python dice_comparation.py
+### To run  a cross validation use:
+        1. bash test_all.sh  
