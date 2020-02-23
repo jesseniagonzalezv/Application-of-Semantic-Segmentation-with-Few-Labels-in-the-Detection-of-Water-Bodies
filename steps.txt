@@ -1,3 +1,12 @@
+To create the data of distilattion run:
+    disti_data_create.py
+    
+To create the histogram:
+    histogram.py
+
+To compare the metrics:
+     bash comparation_metrics.sh
+
 Select:
      train
      utilsTrain
@@ -13,6 +22,332 @@ Run the train
 Run the plotting
     python plotting.py
     #plot_prediction(stage='test',name_file=name_file,out_file=out_file,count=29) # #LR •dist
+    
+    Observaciones:
+    Hay una carpeta que dice 915 esa corresponde a que yo agarre un test de 30 y me quedo 915 para train_val
+    La carpeta de 850 train_val test 94 corresponde a eligir aleatoriamente el 10 % del test
+
+    #pred=(pred >0).float()   #the same result with the next 2 lines
+    pred = torch.sigmoid(pred)
+    pred=(pred >0.50).float()  #with 0.55 is a little better
+
+
+In the pass the cal of loss dice in hthe util  train
+def calc_loss(pred, target, metrics, bce_weight=0.5):
+    bce = F.binary_cross_entropy_with_logits(pred, target)
+    pred = torch.sigmoid(pred)
+    
+    dice = dice_loss(pred, target)
+    
+    pred=(pred >0.5).float()  #!!
+
+metrics_prediction:
+    I am ereasing
+        
+    ###############################  Plotting val  ###############################
+    #np.save(str(os.path.join(outfile_path,"inputs_val{}_{}_{}.npy".format(name_file,int(count),name_model))), np.array(input_vec))
+    #np.save(str(os.path.join(outfile_path,"labels_val{}_{}_{}.npy".format(name_file,int(count),name_model))), np.array(labels_vec))
+    #np.save(str(os.path.join(outfile_path,"pred_val{}_{}_{}.npy".format(name_file,int(count),name_model))), np.array(pred_vec))
+
+    ###############################  test images ###############################            #if((metrics['jaccard'] == 0 )and (metrics['dice'] > 0.8)): 
+            #    result_jaccard3 += [metrics['dice']]  #because  is all water IOU ==1
+            #elif((metrics['jaccard'] == 0 )and (metrics['dice'] < 0.8)): 
+            #       result_jaccard3 += [metrics['jaccard'] ]
+            #final_layer_npy_outpath.format(int(epoch)
+    #np.save(str(os.path.join(outfile_path,"inputs_VHR{}_paral_916.npy".format(int(count)))), np.array(input_vec))
+    #np.save(str(os.path.join(outfile_path,"labels_VHR{}_paral_916.npy".format(int(count)))), np.array(labels_vec))
+    #np.save(str(os.path.join(outfile_path,"pred_VHR{}_paral_916.npy".format(int(count)))), np.array(pred_vec))
+
+
+    #np.save(str(os.path.join(outfile_path,"inputs_VHR{}_paral_100.npy".format(int(count)))), np.array(input_vec))
+    #np.save(str(os.path.join(outfile_path,"labels_VHR{}_paral_100.npy".format(int(count)))), np.array(labels_vec))
+    #np.save(str(os.path.join(outfile_path,"pred_VHR{}_paral_100.npy".format(int(count)))), np.array(pred_vec))
+
+    #np.save(str(os.path.join(outfile_path,"inputs_VHR{}_paral_400.npy".format(int(count)))), np.array(input_vec))
+    #np.save(str(os.path.join(outfile_path,"labels_VHR{}_paral_400.npy".format(int(count)))), np.array(labels_vec))
+    #np.save(str(os.path.join(outfile_path,"pred_VHR{}_paral_400.npy".format(int(count)))), np.array(pred_vec))
+
+    #np.save(str(os.path.join(outfile_path,"inputs_VHR{}_paral_fake.npy".format(int(count)))), np.array(input_vec))
+    #np.save(str(os.path.join(outfile_path,"labels_VHR{}_paral_fake.npy".format(int(count)))), np.array(labels_vec))
+    #np.save(str(os.path.join(outfile_path,"pred_VHR{}_paral_fake.npy".format(int(count)))), np.array(pred_vec))
+    
+        
+
+    #stage='test'
+    #plotting_figures(stage,name_file,out_file )
+
+#####################################################
+######################call funciton###############################
+
+
+#train_file_names = np.load("logs_VHR/mapping/train_files_dist_60.npy")
+#val_file_names = np.load("logs_VHR/mapping/val_files_dist_60.npy")
+#max_values= 3521
+#mean_values=(0.10994662, 0.10066561, 0.1125644, 0.13298954)
+
+#std_values=(0.09256749, 0.06976779, 0.05923646, 0.11411727)
+#find_metrics(train_file_names,val_file_names,max_values, mean_values, std_values, name_model='UNet11', out_file='VHR',dataset_file='VHR' ,name_file='_dist_60' )
+
+''' With the model of VHR test
+train_file_names = np.load("logs_VHR/mapping/train_files_80_percent_UNet11_fold0_4.npy")
+val_file_names = np.load("logs_VHR/mapping/val_files_80_percent_UNet11_fold0_4.npy")
+
+######################## setting all data paths#######
+outfile_path = 'VHR/testout_conida'
+data_path = 'data_VHR'
+#test_path= "data_VHR/unlabel/images_jungle"  #crear otro test
+test_path= "data_VHR/test_conida/images"  #crear otro test
+
+get_files_path = test_path + "/*.npy"
+test_file_names = np.array(sorted(glob.glob(get_files_path)))
+###################################
+
+max_values= 3521
+mean_values=(0.11381838, 0.10376265, 0.11490792, 0.13968428)
+std_values=(0.09109049, 0.06857457, 0.05874884, 0.111346247)
+
+PATH = 'logs_VHR/mapping/model_40epoch_80_percent_UNet11_fold0.pth'
+
+#Initialise the model
+num_classes = 1 
+model = UNet11(num_classes=num_classes)
+model.cuda()
+model.load_state_dict(torch.load(PATH))
+model.eval()   # Set model to evaluate mode
+        
+        
+find_metrics(train_file_names,val_file_names, test_file_names, max_values, mean_values, std_values,fold_out=0, fold_in=4,model=model,  name_model='UNet11', out_file=outfile_path,dataset_file='VHR' ,name_file='_test_conida' )
+from plotting import plot_prediction
+plot_prediction(stage='test',name_file='_test_conida',out_file=outfile_path,name_model='UNet11',fold_out=0,fold_in=4, count=90)
+'''
+#########################end############################    
+
+
+#f3 = open(("predictions_{}/pred_loss_val{}_{}.txt").format(out_file,name_file,name_model), "w+")
 
 
 
+   #loss for HR model label
+    bce_l2 = F.binary_cross_entropy_with_logits(pred_vhr_lab, target_vhr_lab)   
+    pred_vhr_lab = torch.sigmoid((pred_vhr_lab))
+    #pred_hr_lab=(pred_hr_lab >0.50).float()  #with 0.55 is a little better
+
+    dice_l2 = dice_loss(pred_vhr_lab, target_vhr_lab)
+    loss_l2 = bce_l2 * bce_weight + dice_l2 * (1 - bce_weight)
+    
+    #loss for VHR model unlabel                        
+    bce_l3 = F.binary_cross_entropy_with_logits(pred_vhr_unlab, target_vhr_unlab_up)
+    pred_vhr_unlab = torch.sigmoid((pred_vhr_unlab)) 
+    #pred_hr_unlab=(pred_hr_unlab >0.50).float() 
+    dice_l3 = dice_loss(pred_vhr_unlab, target_vhr_unlab_up)
+    loss_l3 = bce_l3 * bce_weight + dice_l3 * (1 - bce_weight)
+    
+    #loss for full-network
+    loss =  (loss_l1 + loss_l2 + loss_l3 * weight_loss )    
+    
+################################
+def calc_loss_seq(pred_vhr_lab, target_vhr_lab,
+
+   
+    #loss for full-network
+    loss =  (loss_l2 + loss_l3 * weight_loss)
+
+    #pred_hr_lab=(pred_hr_lab >0.50).float()  #with 0.55 is a little better
+    #pred_hr_lab=(pred_hr_unlab >0.50).float() 
+    
+    #jaccard_HR_lb = metric_jaccard(pred_hr_lab, target_hr_lab)
+    #jaccard_HR_unlab = metric_jaccard(pred_hr_unlab, target_hr_unlab_up )
+
+    metrics['loss_dice_lb'] += dice_l2.data.cpu().numpy() * target_vhr_lab.size(0)  
+   # metrics['jaccard_lb'] += jaccard_HR_lb.data.cpu().numpy() * target_hr_lab.size(0) 
+    
+    metrics['loss_dice_unlab'] += dice_l3.data.cpu().numpy() * target_vhr_unlab_up.size(0)      
+   # metrics['jaccard_unlab'] += jaccard_HR_unlab.data.cpu().numpy() * target_hr_unlab_up.size(0) 
+      # metrics['jaccard_lb'] += jaccard_HR_lb.data.cpu().numpy() * target_hr_lab.size(0)    # metrics['jaccard_unlab'] += jaccard_HR_unlab.data.cpu().numpy() * target_hr_unlab_up.size(0) 
+      
+############################################## Plotting  #############################################
+
+    #dice=read_metric(args.out_file, args.stage, args.name_file, name='dice',name_model=args.name_model,fold_out=args.fold_out,fold_in=args.fold_in)
+    #jaccard=read_metric(args.out_file, args.stage, args.name_file, name='jaccard',name_model=args.name_model,fold_out=args.fold_out,fold_in=args.fold_in)
+
+#plot_prediction(stage='val',name_file=,out_file,count=11) # #HR •dist
+#plotting_figures(stage='test',name_file='_VHR_60_fake',out_file='VHR',name_model='UNet11',count=29)
+#plotting_figures(stage='test',name_file='_VHR_916',out_file='VHR',name_model='UNet11',count=29)
+#plotting_figures(stage='test',name_file='_VHR_dist',out_file='VHR',name_model='UNet11',count=94)
+#plotting_figures(stage='test',name_file='_dist_60',out_file='VHR',name_model='UNet11',count=94)
+#plotting_figures(stage='test',name_file='_dist_60_2',out_file='VHR',name_model='UNet11',count=94)
+
+####################################
+#plot_prediction(stage='test',name_file='_6_percent',out_file='VHR',name_model='UNet11',fold_out=0,fold_in=3, count=30)
+
+############################### HR
+#plotting_figures(stage='test',name_file='_HR',out_file='HR',name_model='UNet11', count=613)
+
+###############################HR plotting history
+#plot_history_train(out_file='HR',name_file='_HR',name_model='UNet11') #change the name output
+#plot_history_train(out_file='HR', name_file='_HR',name_model='UNet11')  
+
+
+
+
+plot_prediction
+    pred_images[0,0,:,:,:].shape
+
+    #print(np.shape(input_images_rgb))
+    #print(len([input_images_rgb, target_masks_rgb, pred_rgb]))    
+    #print(name_output,filedata)
+
+
+
+plot history
+    #plt.yticks([0,0.2,0.4,0.6,0.8,1])
+
+
+
+
+    filedata = filedata.split(",")
+    loss = []
+    for i in filedata:
+        i = i.strip(" ")
+        #print(i)
+        #if str(i).startswith("loss"):
+
+        if str(i).startswith("loss:"):
+            i = i.split(":")
+            loss.append(float(i[1]))
+            #print(i[1])
+            
+#### helper
+
+
+def reverse_transform2(inp): 
+    inp = inp.to('cpu').numpy().transpose((1, 2, 0))
+    mean = np.array([0.11239524, 0.101936, 0.11311523])
+    std = np.array([0.08964322, 0.06702993, 0.05725554]) 
+ 
+    inp = std * inp + mean
+    inp = np.clip(inp, 0, 1)* 3521#3415  #check value maximun
+    inp = (inp/inp.max()).astype(np.float32)  
+
+    return inp
+    
+    
+    
+    
+def reverse_transform(inp):     
+    inp = inp.transpose(1,2,0)
+    mean = np.array([0.11239524, 0.101936, 0.11311523])
+    std = np.array([0.08964322, 0.06702993, 0.05725554]) 
+    inp = std * inp + mean
+    inp = np.clip(inp, 0, 1)*3521 #3415
+    #inp = (inp/inp.max()).astype(np.float32)
+    inp = (inp/inp.max())#.astype(np.float32)
+    inp = (inp*255).astype(np.uint8)
+    return inp
+    
+    
+  #### 
+  model de VHR
+  
+#def cuda(x):
+#    return x.cuda(async=True) if torch.cuda.is_available() else x
+
+
+
+###########################Train
+TrainVHR########################
+        
+    #print("data_path:",data_path) 
+    #train_path= str(data_path/'train{}'/'images').format(name_file)+ "/*.npy"
+    #val_path= str(data_path/'val{}'/'images').format(name_file)+ "/*.npy" 
+    #train_file_names = np.array(sorted(glob.glob(train_path)))
+    #val_file_names = np.array(sorted(glob.glob(val_path)))
+     #train_file_names, val_file_names = get_files_names(data_path,name_file)
+    ######## 733
+    #train_path= data_path/'train'/'images'
+    #val_path= data_path/'val'/'images'
+    
+    ######## 100
+    #train_path= data_path/'train_100'/'images'
+    #val_path= data_path/'val_100'/'images'
+    
+    ##############400
+    #train_path= data_path/'train_400'/'images'
+    #val_path= data_path/'val_400'/'images'
+    ##############
+    #train_path= data_path/'dist_per'/'train_HR'/'images'
+    #val_path= data_path/'dist_per'/'val_HR'/'images'
+
+  #  torch.save(model.module.state_dict(), out_path/'modelHR_40epoch.pth')
+    #torch.save(model.module.state_dict(), out_path/'modelHR_40epoch_100.pth')
+    #torch.save(model.module.state_dict(), out_path/'modelHR_40epoch_400.pth')
+    #torch.save(model.module.state_dict(), out_path/'modelHR_40epoch_fake.pth')   
+    
+    #out_file=the file of the outputs: VHR, HR, distil, dataset_file=ubication of the data:HR, VHR, name_files: HR_916,VHR_100, VHR_60_fake
+    
+Train_paral#####################
+        #--------------------------model LR-------------------------------------
+        #PATH_modelLR= 'logs_LR/mapping/model_40epoch_LR_UNet11.pth'
+
+        #Initialise the model
+        #model_LR = UNet11(num_classes=num_classes)
+        #model_LR.cuda()
+        #model_LR.load_state_dict(torch.load(PATH_modelLR))
+        #--------------------------model LR-------------------------------------
+        #mean_LR:[0.11952524 0.1264638  0.13479991 0.15017026]
+        #std_LR:[0.08844988 0.07304429 0.06740904 0.11003125]    
+    #train_path_LR= data_path_LR/'train'/'images'
+    #val_path_LR= data_path_LR/'val'/'images'
+
+    ###############  Dowscale VHR perusat #########
+    #data_path_LR = Path('data_VHR') # change the data path here 
+    #print("data_path:",data_path_LR)
+
+    #train_path_LR= data_path_LR/'dist_per'/'train_LR'/'images'
+   # val_path_LR= data_path_LR/'dist_per'/'val_LR'/'images'   
+   
+   #
+#-------------------------------------------------    
+    #train_file_LR = np.array(sorted(list(train_path_LR.glob('*.npy'))))
+    #print(len(train_file_LR))
+    #val_file_LR = np.array(sorted(list(val_path_LR.glob('*.npy'))))
+    #print(len(val_file_LR))
+    
+        #train_path_VHR_lab= data_path_VHR/'train'/'images'
+    #val_path_VHR_lab= data_path_VHR/'val'/'images'
+    
+    #train_path_HR_lab= data_path_HR/'train_100'/'images'
+    #val_path_HR_lab= data_path_HR/'val_100'/'images'
+    
+    #train_path_HR_lab= data_path_HR/'train_400'/'images'
+    #val_path_HR_lab= data_path_HR/'val_400'/'images'
+    
+    #train_path_HR_lab= data_path_HR/'dist_per'/'train_HR'/'images'
+   #val_path_HR_lab= data_path_HR/'dist_per'/'val_HR'/'images'
+    
+    #train_path_HR_lab= data_path_HR/'dist_per'/'train_HR_60'/'images'
+    #val_path_HR_lab= data_path_HR/'dist_per'/'val_HR_60'/'images'
+    #name_file_HR='_dist_60_2'
+    ##### the result are not good checjk maybe clean rivers only
+    #train_file_HR_unlab,val_file_HR_unlab =percent_split(extra, percent = 0.20)
+                    #CenterCrop(512),#using the  VHR normalization fake
+           # CenterCrop(512),#using the  VHR normalization fake
+   # train_loader_VHR_lab = make_loader(train_file_VHR_lab, shuffle=False, transform=train_transform_VHR , batch_size = 2 , mode = "train")
+   # valid_loader_VHR_lab = make_loader(val_file_VHR_lab, transform=val_transform_VHR, batch_size = 2, mode = "train")
+    
+  #  train_loader_VHR_unlab = make_loader(train_file_VHR_lab, shuffle=False, transform=train_transform_VHR , batch_size = 2 , mode = "train")
+  #  valid_loader_VHR_unlab = make_loader(val_file_VHR_lab, transform=val_transform_VHR, batch_size = 2, mode = "train")
+    #183, num_epochs = 40) #733  batch de 4
+                           #25, num_epochs = 40) #90
+                           #100, num_epochs = 40) #400
+                           args.n_steps, args.n_epochs) #60
+                           
+                           
+#########en tarain_paral
+#--------------------------model HR-------------------------------------
+    model_path_HR= args.model_path_HR
+    #Initialise the model
+    model_HR = UNet11(num_classes=num_class)
+    model_HR.cuda()
+    model_HR.load_state_dict(torch.load(model_path_HR))
+#------------------------------------------------------------   

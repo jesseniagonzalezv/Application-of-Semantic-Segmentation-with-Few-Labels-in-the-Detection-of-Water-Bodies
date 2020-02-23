@@ -7,44 +7,25 @@ import torchvision.utils
 
 
 
-def values_jaccard(filedata):
-    m_jaccard = []
+def values_metric(filedata,name_metric):
+    m_metric = []
     for i in filedata:
         i = i.strip(" ")
-        if str(i).startswith("jaccard"):
+        if str(i).startswith(name_metric):
             i = i.split(" ")
-            m_jaccard.append(float(i[1]))
-    return m_jaccard
-
-def values_dice(filedata):
-    m_dice = []
-    for i in filedata:
-        i = i.strip(" ")
-        if str(i).startswith("dice"):
-            i = i.split(" ")
-            m_dice.append(float(i[1]))
-    return m_dice
+            m_metric.append(float(i[1]))
+    return m_metric
 
 
-def reverse_transform2(inp): 
-    inp = inp.to('cpu').numpy().transpose((1, 2, 0))
-    mean = np.array([0.11239524, 0.101936, 0.11311523])
-    std = np.array([0.08964322, 0.06702993, 0.05725554]) 
- 
-    inp = std * inp + mean
-    inp = np.clip(inp, 0, 1)* 3521#3415  #check value maximun
-    inp = (inp/inp.max()).astype(np.float32)  
 
-    return inp
 
 def plot_img_array(img_array, filedata,save,out_file, name_output, ncol=3):
     
-    m_jaccard=values_jaccard(filedata)
-    m_dice=values_dice(filedata)
+    m_jaccard=values_metric(filedata,"jaccard")
+    m_dice=values_metric(filedata,"dice")
     #print(len(m_jaccard))
 
-    nrow = len(img_array)  // ncol
-    
+    nrow = len(img_array)  // ncol    
     plt.close('all')
 
     f, plots = plt.subplots(nrow, ncol, sharex='all', sharey='all', figsize=(ncol * 4, nrow * 4))    
@@ -86,13 +67,21 @@ def masks_to_colorimg(masks):
 
     return colorimg.astype(np.uint8)
 
-def reverse_transform(inp):     
+def reverse_transform(inp,out_file='VHR'):
     inp = inp.transpose(1,2,0)
-    mean = np.array([0.11239524, 0.101936, 0.11311523])
-    std = np.array([0.08964322, 0.06702993, 0.05725554]) 
-    inp = std * inp + mean
-    inp = np.clip(inp, 0, 1)*3521 #3415
-    #inp = (inp/inp.max()).astype(np.float32)
-    inp = (inp/inp.max())#.astype(np.float32)
-    inp = (inp*255).astype(np.uint8)
+    if out_file=='HR':                   
+        mean=np.array([0.11946253, 0.12642327, 0.13482856])
+        std=np.array([0.08853241, 0.07311754, 0.06746538])
+        inp = std * inp + mean
+        inp = np.clip(inp, 0, 1)
+        inp = (inp/inp.max()*255).astype(np.uint8)
+
+    else:
+        mean = np.array([0.11239524, 0.101936, 0.11311523])
+        std = np.array([0.08964322, 0.06702993, 0.05725554]) 
+        inp = std * inp + mean
+        inp = np.clip(inp, 0, 1)
+        inp = (inp/inp.max())
+        inp = (inp*255).astype(np.uint8)
+
     return inp

@@ -1,17 +1,18 @@
 from datetime import datetime
 from pathlib import Path
-
 import random #
 import numpy as np#
 import time 
 import torch 
 import copy      
-
 from collections import defaultdict
 import torch.nn.functional as F
-from loss import dice_loss,metric_jaccard
 import os
 import torch.nn as nn
+
+from loss import dice_loss,metric_jaccard
+from metrics_prediction_2 import calc_loss_paral,print_metrics_paral 
+
 
 
 
@@ -25,80 +26,17 @@ else:
 
 
 
-def calc_loss(pred_lr, target_lr, 
-              pred_hr_lab, target_hr_lab,
-              pred_hr_unlab, target_hr_unlab_up, 
-              metrics, weight_loss = 0.1, bce_weight=0.5):
-    
-    #loss for LR model
-    bce_l1 = F.binary_cross_entropy_with_logits(pred_lr, target_lr)
-    pred_lr = torch.sigmoid(pred_lr) 
-    dice_l1 = dice_loss(pred_lr, target_lr)
-    loss_l1 = bce_l1 * bce_weight + dice_l1 * (1 - bce_weight)
-    
-    #loss for HR model label
-    bce_l2 = F.binary_cross_entropy_with_logits(pred_hr_lab, target_hr_lab)
-    pred_hr_lab = torch.sigmoid((pred_hr_lab))
-    dice_l2 = dice_loss(pred_hr_lab, target_hr_lab)
-    loss_l2 = bce_l2 * bce_weight + dice_l2 * (1 - bce_weight)
-    
-    #loss for HR model unlabel                        
-    bce_l3 = F.binary_cross_entropy_with_logits(pred_hr_unlab, target_hr_unlab_up)
-    pred_hr_unlab = torch.sigmoid((pred_hr_unlab)) 
-    dice_l3 = dice_loss(pred_hr_unlab, target_hr_unlab_up)
-    loss_l3 = bce_l3 * bce_weight + dice_l3 * (1 - bce_weight)
-    
-    #loss for full-network
-    loss =  (loss_l1 + loss_l2 + loss_l3 * weight_loss )
-    
-    #pred_hr_lab=(pred_hr_lab >0.50).float()  #with 0.55 is a little better
-    #pred_hr_unlab=(pred_hr_unlab >0.50).float() 
-    
-    #jaccard_HR_lb = metric_jaccard(pred_hr_lab, target_hr_lab)
-    #jaccard_HR_unlab = metric_jaccard(pred_hr_unlab, target_hr_unlab_up )
-    
-    metrics['loss_LR'] += loss_l1.data.cpu().numpy() * target_lr.size(0)
-    metrics['loss_HRlab'] += loss_l2.data.cpu().numpy() * target_hr_lab.size(0)
-    metrics['loss_HRunlab'] += loss_l3.data.cpu().numpy() * target_hr_unlab_up.size(0)
-    metrics['loss'] += loss.data.cpu().numpy() *(target_hr_lab.size(0)+target_hr_unlab_up.size(0))#* target.size(0)
-    metrics['loss_dice_lb'] += dice_l2.data.cpu().numpy() * target_hr_lab.size(0)  
-    #metrics['jaccard_lb'] += jaccard_HR_lb.data.cpu().numpy() * target_hr_lab.size(0) 
-    
-    metrics['loss_dice_unlab'] += dice_l3.data.cpu().numpy() * target_hr_unlab_up.size(0)  #cambiar por hr_label
-   # metrics['jaccard_unlab'] += jaccard_HR_unlab.data.cpu().numpy() * target_hr_unlab_up.size(0) #cambiar por hr_label
-    
-    
-    return loss
 
-def print_metrics(metrics, epoch_samples_l1, epoch_samples_l2, epoch_samples_l3, epoch_samples_loss, phase,f): # print by epoch
-    outputs = []
-    epoch_samples = [epoch_samples_l1, epoch_samples_l2, epoch_samples_l3, 
-                     epoch_samples_loss,epoch_samples_l2, epoch_samples_l3] # l3 is unlab dice and jaccard now is from unlabel
-    i = 0
-    for k in metrics.keys():       #metricas(frist-mean-input.size)samples
-        outputs.append("{}: {:4f}".format(k, metrics[k] / epoch_samples[i]))
-        i += 1
-    print("{}: {}".format(phase, ", ".join(outputs)))
-    f.write("{}: {}".format(phase, ", ".join(outputs))+ "\n")
 ##_______________________________________________________________________________________________
 
-def train_model(name_file_HR,model_LR, model_HR, optimizer_ft, scheduler,dataloaders_HR_lab,
-                dataloaders_HR_unlab,dataloaders_LR, fold_out,name_model_HR='UNet11',n_steps=15, num_epochs=25):
-    #finally_path = Path('logs')
-    #f = open('logs/history_model1.txt',"w+")
-    #f = open("history_model.txt", "w+")
-    #f = open("history_model_100.txt", "w+")
-    #f = open("history_model_400.txt", "w+")
-    #f = open("history_model_disti_fake.txt", "w+")
-    
-
+def train_model(out_file,name_file_VHR,model_HR, model_VHR, optimizer_ft, scheduler,dataloaders_VHR_lab,
+                dataloaders_VHR_unlab,dataloaders_HR, fold_out,fold_in,name_model_VHR='UNet11',n_steps=15, num_epochs=25):
 
     best_loss = 1e10
     
-    f = open("history_paral/history_model{}_{}_fold{}.txt".format(name_file_HR,name_model_HR,fold_out), "w+")  
+    f = open("history_{}/history_model{}_{}_foldout{}_foldin{}_{}epochs.txt".format(out_file,name_file_VHR,name_model_VHR,fold_out,fold_in,num_epochs), "w+")  
      #--------------------------------------------------------
     upsample = nn.Upsample(scale_factor= 8,  mode='bicubic') 
-    #upsample = nn.Upsample(size=64,scale_factor= 3.57,  mode='bicubic') 
 
     #------------------------------------------------------------   
     for epoch in range(num_epochs):
@@ -114,93 +52,58 @@ def train_model(name_file_HR,model_LR, model_HR, optimizer_ft, scheduler,dataloa
                 for param_group in optimizer_ft.param_groups:
                     f.write("LR" +  str(param_group['lr']) + "\n") 
 
-                model_LR.train()  
-                model_HR.train()  # Set model to training mode
+                model_HR.train()  
+                model_VHR.train()  # Set model to training mode
             else: 
-                model_LR.eval()
                 model_HR.eval()
+                model_VHR.eval()
                 
             metrics = defaultdict(float)
             epoch_samples_l1 = epoch_samples_l2 = epoch_samples_l3 = epoch_samples_loss = 0
             
-            print("dataloader_lb:",len(dataloaders_HR_lab[phase]) )
-            f.write("dataloader:" + str(len(dataloaders_HR_lab[phase])) + "\n")     
+            print("dataloader_lb:",len(dataloaders_VHR_lab[phase]) )
+            f.write("dataloader:" + str(len(dataloaders_VHR_lab[phase])) + "\n")     
     
             for i in range(n_steps):  
-               
-                #print("step_number:", i)
 
-                
                 #Load input data------------------------------------------
-                input_LR, labels_LR= next(iter(dataloaders_LR[phase]))
-                
+                input_HR, labels_HR= next(iter(dataloaders_HR[phase]))
+                input_VHR_lab, labels_VHR_lab = next(iter(dataloaders_VHR_lab[phase])) 
+                input_VHR_unlab, labels = next(iter(dataloaders_VHR_unlab[phase]))                                 
 
-
-                #print(input_LR.type())
-                #print(labels_LR.type())
-                input_HR_lab, labels_HR_lab = next(iter(dataloaders_HR_lab[phase]))
-                #print(phase)
-                #if phase == "train":
-                input_HR_unlab, labels = next(iter(dataloaders_HR_unlab[phase]))  #propocional batches ?
-                #else:
-                    #input_HR_unlab, labels = next(iter(dataloaders_HR_unlab["unlb_val"])) 
-                    
-                
-                
-                
-
-                input_LR = input_LR.to(device)
-                labels_LR = labels_LR.to(device)
-                input_HR_lab = input_HR_lab.to(device)
-                labels_HR_lab = labels_HR_lab.to(device)
-                input_HR_unlab = input_HR_unlab.to(device)
-                
-
+                inputHR = input_HR.to(device)
+                labels_HR = labels_HR.to(device)
+                input_VHR_lab = input_VHR_lab.to(device)
+                labels_VHR_lab = labels_VHR_lab.to(device)
+                input_VHR_unlab = input_VHR_unlab.to(device)                
 
                 optimizer_ft.zero_grad()
                 with torch.set_grad_enabled(phase == 'train'):
-                    #outputs-----------------------------------
-                    ############################### fake LR
-                    #input_LR = nn.functional.interpolate(input_LR, scale_factor= 0.125, mode='bicubic')                 
-                   # labels_LR = nn.functional.interpolate(labels_LR, scale_factor= 0.125, mode='bicubic')      ############################### end fake LR
-                    pred_LR = model_LR(input_LR)
-                    pred_HR_lab = model_HR(input_HR_lab)
-                    inputs_HR_unlab_ds = nn.functional.interpolate(input_HR_unlab, scale_factor= 0.125, mode='bicubic')
 
-                    #inputs_HR_unlab_ds = nn.functional.interpolate(input_HR_unlab,size=64, scale_factor= 0.28, mode='bicubic')
+                    pred_HR = model_HR(input_HR)
+                    pred_VHR_lab = model_VHR(input_VHR_lab)
+                    inputs_VHR_unlab_ds = nn.functional.interpolate(input_VHR_unlab, scale_factor= 0.125, mode='bicubic')
+                 
+                    pred_VHR_unlab_ds = model_HR(inputs_VHR_unlab_ds)
+                    target_VHR_unlab_us = upsample(pred_VHR_unlab_ds)
+                    target_VHR_unlab_us = torch.sigmoid(target_VHR_unlab_us)   
+                    pred_VHR_unlab = model_VHR(input_VHR_unlab)
                     
-                    pred_HR_unlab_ds = model_LR(inputs_HR_unlab_ds)
-                    target_HR_unlab_us = upsample(pred_HR_unlab_ds)
-                    #target_HR_unlab_us[target_HR_unlab_us > 1] = 1
-                    #target_HR_unlab_us[target_HR_unlab_us < 0] = 0
-                    #print('target_out',target_HR_unlab_us)
-                    #target_HR_unlab_us = torch.div(target_HR_unlab_us,2)  ###############    check??
-                    #print('target_out_div',target_HR_unlab_us)
+                    
+                    loss = calc_loss_paral(pred_HR, labels_HR, 
+                                     pred_VHR_lab, labels_VHR_lab,
+                                     pred_VHR_unlab, target_VHR_unlab_us, metrics)
 
-                    target_HR_unlab_us = torch.sigmoid(target_HR_unlab_us)    ###############    check??
-                    #print('target_out_sig',target_HR_unlab_us)                
-                    
-                    #print('target_HR',labels_HR_lab)
-                    
-
-                    pred_HR_unlab = model_HR(input_HR_unlab)
-                    
-                    
-                    loss = calc_loss(pred_LR, labels_LR, 
-                                     pred_HR_lab, labels_HR_lab,
-                                     pred_HR_unlab, target_HR_unlab_us, metrics)
-
-                    # backward + optimize only if in training phase
                     if phase == 'train':
                         loss.backward()
                         optimizer_ft.step()  
                 #________________________________________________________________________
                 # statistics
-                epoch_samples_loss += input_LR.size(0) + input_HR_lab.size(0) + input_HR_unlab.size(0)  # ctd of samples in a batch
-                epoch_samples_l1 += input_LR.size(0) 
-                epoch_samples_l2 += input_HR_lab.size(0) 
-                epoch_samples_l3 += input_HR_unlab.size(0)
-            print_metrics(metrics, epoch_samples_l1, epoch_samples_l2, epoch_samples_l3, epoch_samples_loss, phase,f)
+                epoch_samples_loss += input_HR.size(0) + input_VHR_lab.size(0) + input_VHR_unlab.size(0)  # ctd of samples in a batch
+                epoch_samples_l1 += input_HR.size(0) 
+                epoch_samples_l2 += input_VHR_lab.size(0) 
+                epoch_samples_l3 += input_VHR_unlab.size(0)
+            print_metrics_paral(metrics, epoch_samples_l1, epoch_samples_l2, epoch_samples_l3, epoch_samples_loss, phase,f)
             
             epoch_loss = metrics['loss'] / epoch_samples_loss
             
@@ -210,8 +113,8 @@ def train_model(name_file_HR,model_LR, model_HR, optimizer_ft, scheduler,dataloa
                 f.write("saving best model" + "\n")
 
                 best_loss = epoch_loss
-                best_model_wts_LR = copy.deepcopy(model_LR.state_dict())
-                best_model_wts_HR =  copy.deepcopy(model_HR.state_dict())
+                best_model_wts_HR = copy.deepcopy(model_HR.state_dict())
+                best_model_wts_VHR =  copy.deepcopy(model_VHR.state_dict())
                 
 
 
@@ -224,8 +127,7 @@ def train_model(name_file_HR,model_LR, model_HR, optimizer_ft, scheduler,dataloa
     f.write('Best val loss: {:4f}'.format(best_loss)  + "\n")
     f.close()
 
-    # load best model weights
-    model_LR.load_state_dict(best_model_wts_LR)
     model_HR.load_state_dict(best_model_wts_HR)
+    model_VHR.load_state_dict(best_model_wts_VHR)
     
-    return model_LR, model_HR
+    return model_HR, model_VHR

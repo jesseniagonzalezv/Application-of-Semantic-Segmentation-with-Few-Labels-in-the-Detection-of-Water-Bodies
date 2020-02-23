@@ -1,7 +1,13 @@
-#####################
-'''This code is to load images and masks: data loader
+'''
+This code is to load images and masks: data loader
+
+Input:
+-Satelite Images (CH,H,W)
+
+Output:
+- Images after transformations and convert to float tensor (CH,H,W)
 ''' 
-####################
+
 import torch
 import numpy as np
 from torch.utils.data import Dataset
@@ -49,13 +55,12 @@ def to_float_tensor(img):
     return img
 
 
-def load_image(path):
+def load_image(path): #Input:CH,H,W  Output:H,W,CH 
     img = np.load(str(path))
-    img=img.transpose((1, 2, 0)) 
+    img=img.transpose((1, 2, 0))  
     return  img 
 
-def load_mask(path):   
-
+def load_mask(path):   #Input:CH,H,W  Output:H,W,CH  
     mask = np.load(str(path).replace('images', 'masks').replace(r'.npy', r'_a.npy'), 0)
     mask=mask.transpose(1, 2, 0).reshape(mask.shape[1],-1)
     mask=(mask > 0).astype(np.uint8)
