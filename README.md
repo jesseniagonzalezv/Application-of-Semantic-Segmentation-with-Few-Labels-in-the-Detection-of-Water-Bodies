@@ -11,7 +11,7 @@ Pd: The images must be entered in the following format: CHxHxW.
 How to run
 ----------
 The dataset is organized in the folloing way:
-::
+
 
         ├── data_HR
         │   ├── test_HR
