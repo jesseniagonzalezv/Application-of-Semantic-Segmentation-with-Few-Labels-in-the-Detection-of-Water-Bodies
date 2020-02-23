@@ -1,6 +1,6 @@
 # Segmentation_water_bodies_Peru
 ----------
-### Details of the project.pdf
+### Check the document: details_of_the_project.pdf
 
 This project consist of two dataset::
 - Sentinel: data_HR
