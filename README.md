@@ -1,13 +1,12 @@
 # Segmentation_water_bodies_Peru
 ----------
-
+### Details of the project.pdf
 
 This project consist of two dataset::
 - Sentinel: data_HR
-- PeruSat_1: data_VHR::
+- PeruSat_1: data_VHR
 
-Pd: The images must be entered in the following format: CHxHxW ::
-Details of the project.pdf
+Pd: The images must be entered in the following format: CHxHxW.
 
 How to run
 ----------
