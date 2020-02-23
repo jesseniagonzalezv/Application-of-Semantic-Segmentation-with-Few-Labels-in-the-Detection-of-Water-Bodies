@@ -2,9 +2,10 @@
 ----------
 
 
-This project consist of two dataset:
-Sentinel: data_HR
-PeruSat_1: data_VHR
+This project consist of two dataset::
+- Sentinel: data_HR
+- PeruSat_1: data_VHR
+Pd: The images must be entered in the following format: CHxHxW 
 
 How to run
 ----------
