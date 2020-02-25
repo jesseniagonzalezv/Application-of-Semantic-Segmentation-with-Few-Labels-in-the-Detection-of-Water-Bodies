@@ -3,7 +3,7 @@
 	-To use the NDWI to start with a basic label (when we have rivers with sediments this method doesnt work)
 	-To use a vector and create the labels point by point.
  2. Filter the labels/masks:
-	-Because there is false positives or false negatives it is need touse  filtres 
+	-Because there is false positives or false negatives it is need touse  filtres: 
  		--> filter_masks_1step.py
  3.Screate the  Patches Images and masks
 	-Create the patches to increase the number of images in the dataset and dont consider the images which have more than 15% of black areas (no information) 
