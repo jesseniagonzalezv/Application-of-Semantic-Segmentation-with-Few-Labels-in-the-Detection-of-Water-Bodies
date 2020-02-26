@@ -173,12 +173,12 @@ def main():
             HorizontalFlip(),
             VerticalFlip(),
             Rotate(),
-            ImageOnly(Normalize(mean_values_VHR, std_values_VHR))
+            ImageOnly(Normalize(mean=mean_values_VHR, std=std_values_VHR))
         ])
     
     val_transform_VHR = DualCompose([
             CenterCrop(512),
-            ImageOnly(Normalize(mean_values_VHR, std_values_VHR))
+            ImageOnly(Normalize(mean=mean_values_VHR, std=std_values_VHR))
         ])
     
                      
@@ -187,12 +187,12 @@ def main():
             HorizontalFlip(),
             VerticalFlip(),
             Rotate(),
-            ImageOnly(Normalize(mean_values_HR, std_values_HR))
+            ImageOnly(Normalize(mean=mean_values_HR, std=std_values_HR))
         ])
     
     val_transform_VHR_unlab = DualCompose([
             CenterCrop(512),
-            ImageOnly(Normalize(mean_values_HR, std_values_HR))
+            ImageOnly(Normalize(mean_values_HR, std=std_values_HR))
         ])
     #mean_values_HR=(0.11952524, 0.1264638 , 0.13479991, 0.15017026)
     #std_values_HR=(0.08844988, 0.07304429, 0.06740904, 0.11003125)
@@ -202,12 +202,12 @@ def main():
             HorizontalFlip(),
             VerticalFlip(),
             Rotate(),
-            ImageOnly(Normalize2(mean_values_HR, std_values_HR))  
+            ImageOnly(Normalize2(mean=mean_values_HR,std= std_values_HR))  
         ])
     
     val_transform_HR = DualCompose([
             CenterCrop(64),
-            ImageOnly(Normalize2(mean_values_HR, std_values_HR))    
+            ImageOnly(Normalize2(mean=mean_values_HR, std=std_values_HR))    
         ])
     
     

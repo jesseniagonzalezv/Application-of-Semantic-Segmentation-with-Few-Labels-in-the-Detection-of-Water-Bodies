@@ -109,14 +109,14 @@ def main():
     arg('--name-model', type=str, default='UNet11', choices=['UNet11','UNet','AlbuNet34','SegNet'])
     arg('--fold-out', type=int, help='fold train test', default=0)
     arg('--fold-in', type=int, help='fold train val', default=0)  
-    arg('--epochs', type=int, help='epochs in which the model was trained', default=40)  
+    arg('--n-epochs', type=int, help='epochs in which the model was trained', default=40)  
     arg('--count', type=int, help='number of img to plot', default=94)        
     
     args = parser.parse_args()
     
 
-    plot_history_train(args.out_file, args.name_file,args.name_model,args.fold_out,args.fold_in,args.epochs)   
-    plot_prediction(args.stage, args.name_file, args.out_file, args.name_model,args.fold_out,args.fold_in,args.epochs,args.count) 
+    plot_history_train(args.out_file, args.name_file,args.name_model,args.fold_out,args.fold_in,args.n_epochs)   
+    plot_prediction(args.stage, args.name_file, args.out_file, args.name_model,args.fold_out,args.fold_in,args.n_epochs,args.count) 
  
 
 if __name__ == '__main__':

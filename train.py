@@ -138,12 +138,12 @@ def main():
             HorizontalFlip(),
             VerticalFlip(),
             Rotate(),    
-            ImageOnly(Normalize(mean_values, std_values))
+            ImageOnly(Normalize(mean=mean_values, std=std_values))
         ])
   
         val_transform = DualCompose([
             CenterCrop(512),
-            ImageOnly(Normalize(mean_values, std_values))
+            ImageOnly(Normalize(mean=mean_values, std=std_values))
         ])
         max_values=3521
         train_loader = make_loader(train_file_names, shuffle=True, transform=train_transform, mode='train', batch_size = args.batch_size)  #4 batch_size
