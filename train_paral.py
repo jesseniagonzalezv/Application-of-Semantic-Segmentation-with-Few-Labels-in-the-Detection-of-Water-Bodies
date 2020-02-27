@@ -211,7 +211,7 @@ def main():
         ])
     
     
-    ######################## DATA-LOADERS ###########################################################
+    ######################## DATA-LOADERS ##########################################################
       
     train_loader_VHR_lab = make_loader(train_file_VHR_lab, shuffle=True, transform=train_transform_VHR , batch_size = args.batch_size , mode = "train")
     valid_loader_VHR_lab = make_loader(val_file_VHR_lab, transform=val_transform_VHR, batch_size =args.batch_size, mode = "train")
