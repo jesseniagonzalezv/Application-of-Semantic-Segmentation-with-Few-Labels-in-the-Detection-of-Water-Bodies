@@ -46,7 +46,6 @@ with myFile:
     
 ####### Images ###############################################################################
 
-### I have decrease the long of this function 
 def create_crop_dataset_images():
     start = timeit.default_timer()
     input_filename0  = 'imagen0/IMG_PER1_20170422154946_ORT_MS_003749.TIF'

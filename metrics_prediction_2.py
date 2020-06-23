@@ -185,13 +185,13 @@ def find_metrics(train_file_names,val_file_names, test_file_names, max_values, m
     if(dataset_file == 'VHR'):
         all_transform = DualCompose([
                 CenterCrop(512),
-                ImageOnly(Normalize(mean_values, std_values))
+                ImageOnly(Normalize(mean=mean_values, std=std_values))
             ])
 
     if(dataset_file =='HR'):
         all_transform = DualCompose([
                 CenterCrop(64),
-                ImageOnly(Normalize2(mean_values, std_values))
+                ImageOnly(Normalize2(mean=mean_values, std=std_values))
             ])
 
     train_loader = make_loader(train_file_names,shuffle=True, transform=all_transform)
