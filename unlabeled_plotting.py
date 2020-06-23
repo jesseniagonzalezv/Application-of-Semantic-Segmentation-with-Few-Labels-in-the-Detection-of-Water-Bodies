@@ -31,9 +31,12 @@ def make_loader(file_names, shuffle=False, transform=None, limit=None):
         )
     
 def unlabel_prediction(PATH_model,unlabel_name_file):
+    device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
+
     num_classes = 1 
     model = UNet11(num_classes=num_classes)
-    model.cuda()
+    
+    model.to('cuda:1')
     model.load_state_dict(torch.load(PATH_model))
     model.eval()   
     ######################### setting all data paths#######
@@ -44,7 +47,6 @@ def unlabel_prediction(PATH_model,unlabel_name_file):
     get_files_path = test_path + "/*.npy"
     test_file_names = np.array(sorted(glob.glob(get_files_path)))
     ###################################
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     test_transform = DualCompose([
             CenterCrop(512),
