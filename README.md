@@ -1,7 +1,7 @@
 # Application of Semantic Segmentation with Few Labels in the Detection of Water Bodies from Perusat-1 Satellite’s Images
 Dataset: Perusat
 
-
+ First, we explore the application of a U-Net model and then a transfer knowledge-based model (train_paral.py). 
 How to run
 ----------
 The dataset is organized in the folloing way::
