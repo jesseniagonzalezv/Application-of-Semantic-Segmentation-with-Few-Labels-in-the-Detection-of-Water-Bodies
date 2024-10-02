@@ -1,5 +1,5 @@
-# Training_Perusat
-Dataset Perusat
+# Application of Semantic Segmentation with Few Labels in the Detection of Water Bodies from Perusat-1 Satellite’s Images
+Dataset: Perusat
 
 
 How to run
